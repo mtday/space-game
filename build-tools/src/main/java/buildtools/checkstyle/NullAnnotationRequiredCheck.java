@@ -1,6 +1,6 @@
 package buildtools.checkstyle;
 
-import com.puppycrawl.tools.checkstyle.api.Check;
+import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
@@ -12,7 +12,7 @@ import java.util.TreeSet;
  * This custom checkstyle check is used to enforce method return types and parameters to include one of the
  * null-checking annotations.
  */
-public class NullAnnotationRequiredCheck extends Check {
+public class NullAnnotationRequiredCheck extends AbstractCheck {
     private static final Set<String> NULL_CHECKING_ANNOTATIONS =
             new TreeSet<>(Arrays.asList("Nonnull", "Nullable", "CheckForNull"));
 

@@ -301,6 +301,11 @@
                         <artifactId>build-tools</artifactId>
                         <version>${project.version}</version>
                     </dependency>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>7.8.2</version>
+                    </dependency>
                 </dependencies>
                 <executions>
                     <execution>
