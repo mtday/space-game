@@ -1,6 +1,7 @@
 package com.mday.server;
 
 import akka.actor.ActorSystem;
+import com.mday.server.http.Routes;
 
 import javax.annotation.Nullable;
 
@@ -16,6 +17,8 @@ public final class Server {
      * @param args the command-line parameters
      */
     public static void main(@Nullable final String... args) {
-        Actors.create(ActorSystem.create(SYSTEM_NAME));
+        final ActorSystem actorSystem = ActorSystem.create(SYSTEM_NAME);
+        Actors.create(actorSystem);
+        Routes.create(actorSystem);
     }
 }
