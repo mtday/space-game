@@ -16,25 +16,30 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.event.WindowEvent;
 import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 /**
  * Provides the game display.
  */
 public class Display extends Canvas
         implements Consumer<Event>, KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Display.class);
     private static final long serialVersionUID = 1L;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Display.class);
+
+    private static final boolean FULL_SCREEN = true;
 
     @Nonnull
     private final EventQueue eventQueue;
     @Nonnull
     private final transient GraphicsDevice graphicsDevice;
-    @Nonnull
-    private final JFrame frame;
+
+    private JFrame frame;
 
     /**
      * Create an instance of the game display.
@@ -43,44 +48,46 @@ public class Display extends Canvas
      */
     public Display(@Nonnull final EventQueue eventQueue) {
         this.eventQueue = eventQueue;
-        graphicsDevice = getGraphicsDevice();
-        frame = createFrame(graphicsDevice);
+        this.graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 
-        addKeyListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
         addMouseWheelListener(this);
     }
 
     @Nonnull
-    private GraphicsDevice getGraphicsDevice() {
-        final GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        return graphicsEnvironment.getDefaultScreenDevice();
-    }
-
-    @Nonnull
-    private JFrame createFrame(@Nonnull final GraphicsDevice graphicsDevice) {
+    private JFrame createFrame() {
         final JFrame frame = new JFrame(graphicsDevice.getDefaultConfiguration());
         frame.add(this);
-        frame.setUndecorated(true);
         frame.setIgnoreRepaint(true);
+        if (FULL_SCREEN) {
+            frame.setUndecorated(true);
+        } else {
+            frame.setSize((int) (540 * 1.6), 540);
+            frame.setResizable(false);
+            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            frame.requestFocus();
+        }
+
+        frame.addKeyListener(this);
         return frame;
     }
 
-    /**
-     * Display the window.
-     */
-    public void showWindow() {
+    private void showWindow() {
+        frame = createFrame();
         frame.setVisible(true);
-        graphicsDevice.setFullScreenWindow(frame);
+        if (FULL_SCREEN) {
+            graphicsDevice.setFullScreenWindow(frame);
+        }
     }
 
-    /**
-     * Hide the window.
-     */
-    public void hideWindow() {
+    private void hideWindow() {
         frame.setVisible(false);
-        graphicsDevice.setFullScreenWindow(null);
+        frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+        frame.dispose();
+        if (FULL_SCREEN) {
+            graphicsDevice.setFullScreenWindow(null);
+        }
     }
 
     @Override
