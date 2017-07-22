@@ -1,24 +1,40 @@
 package com.mday.server;
 
-import akka.actor.ActorSystem;
-import com.mday.server.http.Routes;
+import com.mday.server.io.ServerListener;
 
 import javax.annotation.Nullable;
 
 /**
- * Responsible for launching an Akka server instance.
+ * Responsible for launching the game server.
  */
 public final class Server {
-    private static final String SYSTEM_NAME = "mday";
+    private final ServerListener serverListener;
 
     /**
      * Create the server instance.
      *
-     * @param args the command-line parameters
+     * @param port the port on which to listen for incoming connections
      */
-    public static void main(@Nullable final String... args) {
-        final ActorSystem actorSystem = ActorSystem.create(SYSTEM_NAME);
-        Actors.create(actorSystem);
-        Routes.create(actorSystem);
+    public Server(final int port) {
+        serverListener = new ServerListener(port);
+    }
+
+    /**
+     * Run the server.
+     *
+     * @throws InterruptedException if the server is interrupted
+     */
+    public void run() throws InterruptedException {
+        serverListener.run();
+    }
+
+    /**
+     * The entry-point into this server.
+     *
+     * @param args the command-line arguments
+     * @throws InterruptedException if the server is interrupted
+     */
+    public static void main(@Nullable final String... args) throws InterruptedException {
+        new Server(33445).run();
     }
 }

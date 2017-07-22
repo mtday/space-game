@@ -10,7 +10,7 @@
         <version>0.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>server</artifactId>
+    <artifactId>client</artifactId>
 
     <dependencies>
         <!-- Project modules
@@ -19,12 +19,6 @@
             <artifactId>common</artifactId>
         </dependency>
         -->
-
-        <!-- Netty -->
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-        </dependency>
 
         <!-- Logging -->
         <dependency>
