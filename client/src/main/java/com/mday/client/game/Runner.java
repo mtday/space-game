@@ -3,6 +3,7 @@ package com.mday.client.game;
 import com.mday.client.event.Event;
 import com.mday.client.event.EventType;
 import com.mday.client.event.type.QuitEvent;
+import com.mday.client.ui.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +27,8 @@ public class Runner implements Runnable, Consumer<Event> {
 
     @Nonnull
     private final EventQueue eventQueue;
+    @Nonnull
+    private final Display display;
 
     @Nonnull
     private final ScheduledExecutorService scheduledExecutorService;
@@ -38,9 +41,11 @@ public class Runner implements Runnable, Consumer<Event> {
      * Create an instance of this class.
      *
      * @param eventQueue the event queue that has all of the events that need to be processed
+     * @param display the display on which the game will be drawn
      */
-    public Runner(@Nonnull final EventQueue eventQueue) {
+    public Runner(@Nonnull final EventQueue eventQueue, @Nonnull final Display display) {
         this.eventQueue = eventQueue;
+        this.display = display;
         this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         this.eventConsumers = new ConcurrentLinkedQueue<>();
         this.eventConsumers.add(this);
@@ -94,7 +99,7 @@ public class Runner implements Runnable, Consumer<Event> {
     }
 
     private void updateDisplay() {
-        // TODO
+        display.render();
     }
 
     @Override

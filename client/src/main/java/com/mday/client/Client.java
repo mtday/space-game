@@ -5,6 +5,7 @@ import com.mday.client.event.type.QuitEvent;
 import com.mday.client.game.EventQueue;
 import com.mday.client.game.Runner;
 import com.mday.client.ui.Display;
+import com.mday.client.ui.draw.Background;
 
 import javax.annotation.Nullable;
 
@@ -20,8 +21,12 @@ public class Client {
      */
     public Client() {
         eventQueue = new EventQueue();
-        runner = new Runner(eventQueue);
-        runner.addEventConsumer(new Display(eventQueue));
+
+        final Display display = new Display(eventQueue);
+        display.addSurfaceConsumer(new Background());
+
+        runner = new Runner(eventQueue, display);
+        runner.addEventConsumer(display);
         runner.addEventConsumer(new EscapeKeyAction(eventQueue));
     }
 
