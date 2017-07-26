@@ -13,8 +13,6 @@ import javax.annotation.Nonnull;
 public class Surface extends Canvas {
     private static final long serialVersionUID = 1L;
 
-    private final int width;
-    private final int height;
     @Nonnull
     private final transient BufferedImage bufferedImage;
 
@@ -25,30 +23,8 @@ public class Surface extends Canvas {
      * @param height the height of the display surface
      */
     public Surface(final int width, final int height) {
-        this.width = width;
-        this.height = height;
-        this.bufferedImage = new BufferedImage(width, height, TYPE_INT_ARGB);
         super.setSize(width, height);
-    }
-
-    /**
-     * Retrieve the width of this surface.
-     *
-     * @return the width of the surface
-     */
-    @Override
-    public int getWidth() {
-        return width;
-    }
-
-    /**
-     * Retrieve the height of this surface.
-     *
-     * @return the height of the surface
-     */
-    @Override
-    public int getHeight() {
-        return height;
+        this.bufferedImage = new BufferedImage(width, height, TYPE_INT_ARGB);
     }
 
     /**

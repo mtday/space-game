@@ -4,8 +4,10 @@ import com.mday.client.action.EscapeKeyAction;
 import com.mday.client.event.type.QuitEvent;
 import com.mday.client.game.EventQueue;
 import com.mday.client.game.Runner;
+import com.mday.client.game.Units;
 import com.mday.client.ui.Display;
-import com.mday.client.ui.draw.Background;
+import com.mday.client.ui.render.BackgroundRenderer;
+import com.mday.client.ui.render.UnitRenderer;
 
 import javax.annotation.Nullable;
 
@@ -21,12 +23,15 @@ public class Client {
      */
     public Client() {
         eventQueue = new EventQueue();
+        final Units units = new Units();
 
         final Display display = new Display(eventQueue);
-        display.addSurfaceConsumer(new Background());
+        display.addSurfaceConsumer(new BackgroundRenderer());
+        display.addSurfaceConsumer(new UnitRenderer(units));
 
         runner = new Runner(eventQueue, display);
         runner.addEventConsumer(display);
+        runner.addEventConsumer(units);
         runner.addEventConsumer(new EscapeKeyAction(eventQueue));
     }
 

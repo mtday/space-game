@@ -16,9 +16,9 @@ public class CoordTest {
     public void testDefaultConstructor() {
         final Coord c = new Coord();
 
-        assertEquals(0, c.x);
-        assertEquals(0, c.y);
-        assertEquals(0, c.z);
+        assertEquals(0, c.getX());
+        assertEquals(0, c.getY());
+        assertEquals(0, c.getZ());
     }
 
     /**
@@ -28,9 +28,9 @@ public class CoordTest {
     public void testTwoParameterConstructor() {
         final Coord c = new Coord(-2, -1);
 
-        assertEquals(-2, c.x);
-        assertEquals(-1, c.y);
-        assertEquals(3, c.z);
+        assertEquals(-2, c.getX());
+        assertEquals(3, c.getY());
+        assertEquals(-1, c.getZ());
     }
 
     /**
@@ -40,9 +40,9 @@ public class CoordTest {
     public void testThreeParameterConstructor() {
         final Coord c = new Coord(-2, -1, 3);
 
-        assertEquals(-2, c.x);
-        assertEquals(-1, c.y);
-        assertEquals(3, c.z);
+        assertEquals(-2, c.getX());
+        assertEquals(-1, c.getY());
+        assertEquals(3, c.getZ());
     }
 
     /**
@@ -80,7 +80,7 @@ public class CoordTest {
     @Test
     public void testHashCode() {
         assertEquals(961, new Coord().hashCode());
-        assertEquals(930, new Coord(-1, 0, 1).hashCode());
+        assertEquals(931, new Coord(-1, 0, 1).hashCode());
     }
 
     /**

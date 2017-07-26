@@ -15,6 +15,16 @@ public enum EventType {
     QUIT,
 
     /**
+     * Indicates the creation of a new unit.
+     */
+    UNIT_ADD,
+
+    /**
+     * Indicates the removal of a unit.
+     */
+    UNIT_REMOVE,
+
+    /**
      * A key input event.
      */
     KEY,

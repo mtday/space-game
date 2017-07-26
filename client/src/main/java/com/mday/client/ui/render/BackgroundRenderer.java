@@ -1,4 +1,4 @@
-package com.mday.client.ui.draw;
+package com.mday.client.ui.render;
 
 import com.mday.client.ui.Surface;
 import org.slf4j.Logger;
@@ -13,8 +13,8 @@ import javax.annotation.Nonnull;
 /**
  * Responsible for drawing the background.
  */
-public class Background implements Consumer<Surface> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Background.class);
+public class BackgroundRenderer implements Consumer<Surface> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BackgroundRenderer.class);
 
     @Override
     public void accept(@Nonnull final Surface surface) {
