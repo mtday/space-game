@@ -5,6 +5,7 @@ import com.mday.client.event.type.QuitEvent;
 import com.mday.client.game.EventQueue;
 import com.mday.client.game.Runner;
 import com.mday.client.game.Units;
+import com.mday.client.io.ServerConnector;
 import com.mday.client.ui.Display;
 import com.mday.client.ui.render.BackgroundRenderer;
 import com.mday.client.ui.render.UnitRenderer;
@@ -16,6 +17,7 @@ import javax.annotation.Nullable;
  */
 public class Client {
     private final EventQueue eventQueue;
+    private final ServerConnector serverConnector;
     private final Runner runner;
 
     /**
@@ -23,6 +25,8 @@ public class Client {
      */
     public Client() {
         eventQueue = new EventQueue();
+        serverConnector = new ServerConnector("localhost", 33445, eventQueue);
+
         final Units units = new Units();
 
         final Display display = new Display(eventQueue);
@@ -30,6 +34,7 @@ public class Client {
         display.addSurfaceConsumer(new UnitRenderer(units));
 
         runner = new Runner(eventQueue, display);
+        runner.addEventConsumer(serverConnector);
         runner.addEventConsumer(display);
         runner.addEventConsumer(units);
         runner.addEventConsumer(new EscapeKeyAction(eventQueue));
@@ -41,6 +46,7 @@ public class Client {
     public void run() {
         try {
             runner.start();
+            serverConnector.run();
             Thread.sleep(20000);
         } catch (final InterruptedException interrupted) {
             // Ignored.

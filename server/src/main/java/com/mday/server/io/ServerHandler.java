@@ -1,8 +1,6 @@
 package com.mday.server.io;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import io.netty.buffer.ByteBuf;
+import com.mday.common.message.Message;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
@@ -19,9 +17,12 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(@Nonnull final ChannelHandlerContext ctx, @Nonnull final Object msg) throws Exception {
-        final ByteBuf byteBuf = (ByteBuf) msg;
         try {
-            LOGGER.info("Received message: {}", byteBuf.toString(UTF_8));
+            if (msg instanceof Message) {
+                LOGGER.info("Received message: {}", msg);
+            } else {
+                LOGGER.warn("Unrecognized message: {}", msg.getClass().getName());
+            }
         } finally {
             ReferenceCountUtil.release(msg);
         }

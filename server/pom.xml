@@ -13,12 +13,11 @@
     <artifactId>server</artifactId>
 
     <dependencies>
-        <!-- Project modules
+        <!-- Project modules -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>common</artifactId>
         </dependency>
-        -->
 
         <!-- Netty -->
         <dependency>

@@ -1,5 +1,8 @@
 package com.mday.server.io;
 
+import com.mday.common.serde.MessageDecoder;
+import com.mday.common.serde.MessageEncoder;
+import com.mday.common.serde.SerDeFactory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -13,9 +16,13 @@ import javax.annotation.Nonnull;
  * Initializes the server and binds the server handler.
  */
 public class ServerInitializer extends ChannelInitializer<SocketChannel> {
-    private final ServerHandler serverHandler;
+    @Nonnull
     private final EventLoopGroup parentGroup;
+    @Nonnull
     private final EventLoopGroup childGroup;
+
+    @Nonnull
+    private final SerDeFactory serDeFactory;
 
     /**
      * Parameter constructor.
@@ -24,9 +31,9 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
      * @param childGroup  the thread group used to process connections
      */
     public ServerInitializer(@Nonnull final EventLoopGroup parentGroup, @Nonnull final EventLoopGroup childGroup) {
-        serverHandler = new ServerHandler();
         this.parentGroup = parentGroup;
         this.childGroup = childGroup;
+        serDeFactory = new SerDeFactory();
     }
 
     /**
@@ -48,6 +55,9 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
 
     @Override
     protected void initChannel(@Nonnull final SocketChannel socketChannel) throws Exception {
-        socketChannel.pipeline().addLast(serverHandler);
+        final MessageEncoder messageEncoder = new MessageEncoder(serDeFactory);
+        final MessageDecoder messageDecoder = new MessageDecoder(serDeFactory);
+        final ServerHandler serverHandler = new ServerHandler();
+        socketChannel.pipeline().addLast(messageEncoder, messageDecoder, serverHandler);
     }
 }

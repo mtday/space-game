@@ -35,7 +35,7 @@ public class Display implements Consumer<Event>, KeyListener, MouseListener, Mou
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Display.class);
 
-    private static final boolean FULL_SCREEN = true;
+    private static final boolean FULL_SCREEN = false;
 
     @Nonnull
     private final EventQueue eventQueue;
