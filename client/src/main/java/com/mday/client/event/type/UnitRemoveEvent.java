@@ -1,7 +1,8 @@
 package com.mday.client.event.type;
 
+import static com.mday.client.event.EventType.UNIT_REMOVE;
+
 import com.mday.client.event.Event;
-import com.mday.client.event.EventType;
 import com.mday.common.model.Unit;
 
 import javax.annotation.Nonnull;
@@ -19,7 +20,7 @@ public class UnitRemoveEvent extends Event {
      * @param unit the unit to be removed
      */
     public UnitRemoveEvent(@Nonnull final Unit unit) {
-        super(EventType.UNIT_REMOVE);
+        super(UNIT_REMOVE);
         this.unit = unit;
     }
 

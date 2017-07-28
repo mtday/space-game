@@ -1,20 +1,19 @@
 package com.mday.client.action;
 
 import com.mday.client.event.Event;
+import com.mday.client.event.EventConsumer;
 import com.mday.client.event.type.KeyEvent;
 import com.mday.client.event.type.QuitEvent;
 import com.mday.client.game.EventQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.function.Consumer;
-
 import javax.annotation.Nonnull;
 
 /**
  * Responsible for handling the escape key.
  */
-public class EscapeKeyAction implements Consumer<Event> {
+public class EscapeKeyAction implements EventConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(EscapeKeyAction.class);
 
     @Nonnull

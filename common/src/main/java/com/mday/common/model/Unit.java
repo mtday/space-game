@@ -4,35 +4,46 @@ import java.util.Objects;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * The base class for units.
  */
-public class Unit {
+public class Unit implements Comparable<Unit> {
+    @Nonnull
+    private final UnitType type;
     @Nonnull
     private final String id;
     @Nonnull
     private final String owner;
     @Nonnull
-    private final UnitType type;
-    @Nonnull
-    private Coord coord;
+    private Location location;
     private int direction = 0;
 
     /**
      * Create a new unit instance.
      *
+     * @param type the type of this unit
      * @param id the unique id of this unit
      * @param owner the id of the owner of this unit
-     * @param type the type of this unit
-     * @param coord the location of this unit
+     * @param location the location of this unit
      */
-    public Unit(@Nonnull final String id, @Nonnull final String owner, @Nonnull final UnitType type,
-            @Nonnull final Coord coord) {
+    public Unit(@Nonnull final UnitType type, @Nonnull final String id, @Nonnull final String owner,
+            @Nonnull final Location location) {
+        this.type = type;
         this.id = id;
         this.owner = owner;
-        this.type = type;
-        this.coord = coord;
+        this.location = location;
+    }
+
+    /**
+     * Retrieve the type of this unit.
+     *
+     * @return the type of this unit
+     */
+    @Nonnull
+    public UnitType getType() {
+        return type;
     }
 
     /**
@@ -56,32 +67,22 @@ public class Unit {
     }
 
     /**
-     * Retrieve the type of this unit.
-     *
-     * @return the type of this unit
-     */
-    @Nonnull
-    public UnitType getType() {
-        return type;
-    }
-
-    /**
      * Retrieve the location of this unit.
      *
      * @return the location of this unit
      */
     @Nonnull
-    public Coord getCoord() {
-        return coord;
+    public Location getLocation() {
+        return location;
     }
 
     /**
      * Set the location of this unit.
      *
-     * @param coord the new location of this unit
+     * @param location the new location of this unit
      */
-    public void setCoord(@Nonnull final Coord coord) {
-        this.coord = coord;
+    public void setLocation(@Nonnull final Location location) {
+        this.location = location;
     }
 
     /**
@@ -103,30 +104,28 @@ public class Unit {
     }
 
     @Override
-    public boolean equals(@CheckForNull final Object other) {
-        if (!(other instanceof Unit)) {
-            return false;
+    public int compareTo(@Nullable final Unit unit) {
+        if (unit == null) {
+            return 1;
         }
 
-        final Unit unit = (Unit) other;
-        // @formatter:off
-        return Objects.equals(getId(), unit.getId())
-                && Objects.equals(getOwner(), unit.getOwner())
-                && Objects.equals(getType(), unit.getType())
-                && Objects.equals(getCoord(), unit.getCoord())
-                && Objects.equals(getDirection(), unit.getDirection());
-        // @formatter:on
+        return getId().compareTo(unit.getId());
+    }
+
+    @Override
+    public boolean equals(@CheckForNull final Object other) {
+        return other instanceof Unit && compareTo((Unit) other) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getOwner(), getType().name(), getCoord(), getDirection());
+        return Objects.hash(getId());
     }
 
     @Override
     @Nonnull
     public String toString() {
-        return String.format("Unit[id=%s, owner=%s, type=%s, coord=%s, direction=%d]",
-                getId(), getOwner(), getType().name(), getCoord(), getDirection());
+        return String.format("Unit[type=%s, id=%s, owner=%s, location=%s, direction=%d]",
+                getType().name(), getId(), getOwner(), getLocation(), getDirection());
     }
 }

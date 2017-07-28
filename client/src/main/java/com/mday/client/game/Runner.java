@@ -1,6 +1,7 @@
 package com.mday.client.game;
 
 import com.mday.client.event.Event;
+import com.mday.client.event.EventConsumer;
 import com.mday.client.event.EventType;
 import com.mday.client.event.type.QuitEvent;
 import com.mday.client.ui.Display;
@@ -13,14 +14,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 
 /**
  * Responsible for managing the game event loop.
  */
-public class Runner implements Runnable, Consumer<Event> {
+public class Runner implements Runnable, EventConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(Runner.class);
 
     private static final int TARGET_FPS = 60;
@@ -33,7 +33,7 @@ public class Runner implements Runnable, Consumer<Event> {
     @Nonnull
     private final ScheduledExecutorService scheduledExecutorService;
     @Nonnull
-    private final Queue<Consumer<Event>> eventConsumers;
+    private final Queue<EventConsumer> eventConsumers;
 
     private ScheduledFuture<?> scheduledFuture = null;
 
@@ -56,7 +56,7 @@ public class Runner implements Runnable, Consumer<Event> {
      *
      * @param eventConsumer the event consumer that should receive game events
      */
-    public void addEventConsumer(@Nonnull final Consumer<Event> eventConsumer) {
+    public void addEventConsumer(@Nonnull final EventConsumer eventConsumer) {
         this.eventConsumers.add(eventConsumer);
     }
 

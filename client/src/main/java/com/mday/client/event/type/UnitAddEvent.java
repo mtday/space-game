@@ -1,7 +1,8 @@
 package com.mday.client.event.type;
 
+import static com.mday.client.event.EventType.UNIT_ADD;
+
 import com.mday.client.event.Event;
-import com.mday.client.event.EventType;
 import com.mday.common.model.Unit;
 
 import javax.annotation.Nonnull;
@@ -19,7 +20,7 @@ public class UnitAddEvent extends Event {
      * @param unit the unit to be added
      */
     public UnitAddEvent(@Nonnull final Unit unit) {
-        super(EventType.UNIT_ADD);
+        super(UNIT_ADD);
         this.unit = unit;
     }
 

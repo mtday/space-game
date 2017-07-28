@@ -1,7 +1,8 @@
 package com.mday.client.event.type;
 
+import static com.mday.client.event.EventType.MOUSE;
+
 import com.mday.client.event.Event;
-import com.mday.client.event.EventType;
 
 import javax.annotation.Nonnull;
 
@@ -18,7 +19,7 @@ public class MouseEvent extends Event {
      * @param mouseEvent the mouse event that occurred
      */
     public MouseEvent(@Nonnull final java.awt.event.MouseEvent mouseEvent) {
-        super(EventType.MOUSE);
+        super(MOUSE);
         this.mouseEvent = mouseEvent;
     }
 

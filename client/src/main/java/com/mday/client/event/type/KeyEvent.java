@@ -1,7 +1,8 @@
 package com.mday.client.event.type;
 
+import static com.mday.client.event.EventType.KEY;
+
 import com.mday.client.event.Event;
-import com.mday.client.event.EventType;
 
 import javax.annotation.Nonnull;
 
@@ -18,7 +19,7 @@ public class KeyEvent extends Event {
      * @param keyEvent the key event that occurred
      */
     public KeyEvent(@Nonnull final java.awt.event.KeyEvent keyEvent) {
-        super(EventType.KEY);
+        super(KEY);
         this.keyEvent = keyEvent;
     }
 

@@ -1,6 +1,7 @@
 package com.mday.client.io;
 
 import com.mday.client.event.Event;
+import com.mday.client.event.EventConsumer;
 import com.mday.client.event.EventType;
 import com.mday.client.game.EventQueue;
 import io.netty.bootstrap.Bootstrap;
@@ -10,14 +11,12 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.function.Consumer;
-
 import javax.annotation.Nonnull;
 
 /**
  * Initializes the netty client to connect to the game server.
  */
-public class ServerConnector implements Consumer<Event> {
+public class ServerConnector implements EventConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerConnector.class);
 
     @Nonnull

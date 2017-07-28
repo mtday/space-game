@@ -1,17 +1,18 @@
 package com.mday.client.game;
 
 import com.mday.client.event.Event;
+import com.mday.client.event.EventConsumer;
 import com.mday.client.event.type.UnitAddEvent;
 import com.mday.client.event.type.UnitRemoveEvent;
 import com.mday.common.model.Unit;
 import com.mday.common.model.UnitType;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,13 +20,23 @@ import javax.annotation.Nullable;
 /**
  * Manages the units that are known in the game as a mapping between unique unit id and unit.
  */
-public class Units implements Consumer<Event> {
+public class Units implements EventConsumer {
     @Nonnull
     private final ConcurrentHashMap<String, Unit> byId = new ConcurrentHashMap<>();
     @Nonnull
     private final ConcurrentHashMap<UnitType, ConcurrentSkipListSet<Unit>> byType = new ConcurrentHashMap<>();
     @Nonnull
     private final ConcurrentHashMap<String, ConcurrentSkipListSet<Unit>> byOwner = new ConcurrentHashMap<>();
+
+    /**
+     * Retrieve a collection of all the known units.
+     *
+     * @return a collection of all the known units
+     */
+    @Nonnull
+    public Collection<Unit> getAll() {
+        return byId.values();
+    }
 
     /**
      * Retrieve a specific unit by unique id.

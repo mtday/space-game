@@ -25,6 +25,16 @@ public enum EventType {
     UNIT_REMOVE,
 
     /**
+     * Zoom in on the display surface.
+     */
+    ZOOM_IN,
+
+    /**
+     * Zoom out from the display surface.
+     */
+    ZOOM_OUT,
+
+    /**
      * A key input event.
      */
     KEY,

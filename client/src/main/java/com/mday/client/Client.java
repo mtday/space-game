@@ -1,7 +1,10 @@
 package com.mday.client;
 
 import com.mday.client.action.EscapeKeyAction;
+import com.mday.client.action.MinusKeyAction;
+import com.mday.client.action.PlusKeyAction;
 import com.mday.client.event.type.QuitEvent;
+import com.mday.client.event.type.UnitAddEvent;
 import com.mday.client.game.EventQueue;
 import com.mday.client.game.Runner;
 import com.mday.client.game.Units;
@@ -9,6 +12,10 @@ import com.mday.client.io.ServerConnector;
 import com.mday.client.ui.Display;
 import com.mday.client.ui.render.BackgroundRenderer;
 import com.mday.client.ui.render.UnitRenderer;
+import com.mday.common.model.Location;
+import com.mday.common.model.unit.ReconDroneUnit;
+import com.mday.common.model.unit.ResearchVesselUnit;
+import com.mday.common.model.unit.ShipyardUnit;
 
 import javax.annotation.Nullable;
 
@@ -29,8 +36,9 @@ public class Client {
 
         final Units units = new Units();
 
+        final BackgroundRenderer backgroundRenderer = new BackgroundRenderer();
         final Display display = new Display(eventQueue);
-        display.addSurfaceConsumer(new BackgroundRenderer());
+        display.addSurfaceConsumer(backgroundRenderer);
         display.addSurfaceConsumer(new UnitRenderer(units));
 
         runner = new Runner(eventQueue, display);
@@ -38,6 +46,13 @@ public class Client {
         runner.addEventConsumer(display);
         runner.addEventConsumer(units);
         runner.addEventConsumer(new EscapeKeyAction(eventQueue));
+        runner.addEventConsumer(new PlusKeyAction(eventQueue));
+        runner.addEventConsumer(new MinusKeyAction(eventQueue));
+        runner.addEventConsumer(backgroundRenderer);
+
+        eventQueue.add(new UnitAddEvent(new ShipyardUnit("shipyard", "me", new Location(0, 0))));
+        eventQueue.add(new UnitAddEvent(new ReconDroneUnit("recon", "me", new Location(-100, 0))));
+        eventQueue.add(new UnitAddEvent(new ResearchVesselUnit("research", "me", new Location(100, 0))));
     }
 
     /**
@@ -46,7 +61,7 @@ public class Client {
     public void run() {
         try {
             runner.start();
-            serverConnector.run();
+            //serverConnector.run();
             Thread.sleep(20000);
         } catch (final InterruptedException interrupted) {
             // Ignored.

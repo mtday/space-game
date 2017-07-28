@@ -1,7 +1,8 @@
 package com.mday.client.event.type;
 
+import static com.mday.client.event.EventType.MOUSE_WHEEL;
+
 import com.mday.client.event.Event;
-import com.mday.client.event.EventType;
 
 import javax.annotation.Nonnull;
 
@@ -18,7 +19,7 @@ public class MouseWheelEvent extends Event {
      * @param mouseWheelEvent the mouse wheel event that occurred
      */
     public MouseWheelEvent(@Nonnull final java.awt.event.MouseWheelEvent mouseWheelEvent) {
-        super(EventType.MOUSE_WHEEL);
+        super(MOUSE_WHEEL);
         this.mouseWheelEvent = mouseWheelEvent;
     }
 

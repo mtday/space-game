@@ -1,8 +1,10 @@
 package com.mday.client.ui;
 
 import com.mday.client.event.Event;
+import com.mday.client.event.EventConsumer;
 import com.mday.client.event.EventType;
 import com.mday.client.game.EventQueue;
+import com.mday.common.model.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +23,6 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 import javax.swing.JFrame;
@@ -30,12 +31,12 @@ import javax.swing.WindowConstants;
 /**
  * Provides the game display.
  */
-public class Display implements Consumer<Event>, KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
+public class Display implements EventConsumer, KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Display.class);
 
-    private static final boolean FULL_SCREEN = false;
+    private static final boolean FULL_SCREEN = true;
 
     @Nonnull
     private final EventQueue eventQueue;
@@ -44,7 +45,7 @@ public class Display implements Consumer<Event>, KeyListener, MouseListener, Mou
 
     private JFrame frame;
     private Surface surface;
-    private final List<Consumer<Surface>> surfaceConsumers = new LinkedList<>();
+    private final List<SurfaceConsumer> surfaceConsumers = new LinkedList<>();
 
     /**
      * Create an instance of the game display.
@@ -61,7 +62,7 @@ public class Display implements Consumer<Event>, KeyListener, MouseListener, Mou
      *
      * @param surfaceConsumer the surface consumer that will support drawing the game
      */
-    public void addSurfaceConsumer(@Nonnull final Consumer<Surface> surfaceConsumer) {
+    public void addSurfaceConsumer(@Nonnull final SurfaceConsumer surfaceConsumer) {
         surfaceConsumers.add(surfaceConsumer);
     }
 
@@ -70,7 +71,7 @@ public class Display implements Consumer<Event>, KeyListener, MouseListener, Mou
         final GraphicsConfiguration graphicsConfiguration = graphicsDevice.getDefaultConfiguration();
         final int width = (int) graphicsConfiguration.getBounds().getWidth();
         final int height = (int) graphicsConfiguration.getBounds().getHeight();
-        final Surface surface = new Surface(width, height);
+        final Surface surface = new Surface(width, height, new Location());
         surface.addKeyListener(this);
         surface.addMouseListener(this);
         surface.addMouseMotionListener(this);
