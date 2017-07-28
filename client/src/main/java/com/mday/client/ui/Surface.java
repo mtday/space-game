@@ -1,28 +1,36 @@
 package com.mday.client.ui;
 
+import static java.awt.RenderingHints.KEY_ANTIALIASING;
+import static java.awt.RenderingHints.KEY_RENDERING;
 import static java.awt.RenderingHints.KEY_TEXT_ANTIALIASING;
-import static java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON;
+import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
+import static java.awt.RenderingHints.VALUE_RENDER_QUALITY;
+import static java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_GASP;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
 import com.mday.common.model.Location;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-import java.awt.Canvas;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import javax.annotation.Nonnull;
+import javax.swing.JPanel;
 
 /**
  * Represents the display surface on which the game graphics will be drawn.
  */
-public class Surface extends Canvas {
+public class Surface extends JPanel {
     private static final long serialVersionUID = 1L;
 
     @Nonnull
     private final transient BufferedImage bufferedImage;
 
-    private int zoom = 14;
+    private int zoom = 20;
 
     @Nonnull
     private final transient Location center;
@@ -34,24 +42,48 @@ public class Surface extends Canvas {
      * @param height the height of the display surface
      * @param center the location describing the center point in this surface
      */
+    @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
     public Surface(final int width, final int height, @Nonnull final Location center) {
-        super.setSize(width, height);
+        setSize(width, height);
+        setPreferredSize(new Dimension(width, height));
         this.center = center;
 
         bufferedImage = new BufferedImage(width, height, TYPE_INT_ARGB);
 
         final Graphics2D graphics = (Graphics2D) bufferedImage.getGraphics();
-        graphics.setRenderingHints(new RenderingHints(KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_ON));
+
+        // NOTE: Loading the font metrics here takes a long time. See the bug report:
+        // https://bugs.openjdk.java.net/browse/JDK-8179209
+        // We call getFontMetrics here before the JFrame is shown to prevent an empty frame from being displayed.
+        graphics.setFont(new Font("Dialog", Font.PLAIN, 12));
+        graphics.getFontMetrics();
+    }
+
+    @Override
+    protected void paintComponent(@Nonnull final Graphics graphics) {
+        super.paintComponent(graphics);
+        graphics.drawImage(getBufferedImage(), 0, 0, getWidth(), getHeight(), null);
+    }
+
+    @Nonnull
+    private BufferedImage getBufferedImage() {
+        return bufferedImage;
     }
 
     /**
-     * Retrieve the image on which to draw.
+     * Retrieve the graphics on which to draw game elements.
      *
-     * @return the image on which to draw
+     * @return a {@link Graphics2D} on which to draw game elements
      */
     @Nonnull
-    public BufferedImage getBufferedImage() {
-        return bufferedImage;
+    public Graphics2D getDrawGraphics() {
+        final Graphics2D graphics = (Graphics2D) bufferedImage.getGraphics();
+        final RenderingHints renderingHints = new RenderingHints(null);
+        renderingHints.put(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+        renderingHints.put(KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_GASP);
+        renderingHints.put(KEY_RENDERING, VALUE_RENDER_QUALITY);
+        graphics.setRenderingHints(renderingHints);
+        return graphics;
     }
 
     /**

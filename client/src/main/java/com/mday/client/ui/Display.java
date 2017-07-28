@@ -8,7 +8,7 @@ import com.mday.common.model.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Graphics;
+import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -20,7 +20,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferStrategy;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,7 +35,8 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Display.class);
 
-    private static final boolean FULL_SCREEN = true;
+    private static final boolean FULL_SCREEN = false;
+    private static final Dimension FRAME_DIMENSION = new Dimension(640, 520);
 
     @Nonnull
     private final EventQueue eventQueue;
@@ -68,10 +68,15 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
 
     @Nonnull
     private Surface createSurface() {
-        final GraphicsConfiguration graphicsConfiguration = graphicsDevice.getDefaultConfiguration();
-        final int width = (int) graphicsConfiguration.getBounds().getWidth();
-        final int height = (int) graphicsConfiguration.getBounds().getHeight();
-        final Surface surface = new Surface(width, height, new Location());
+        final Surface surface;
+        if (FULL_SCREEN) {
+            final GraphicsConfiguration graphicsConfiguration = graphicsDevice.getDefaultConfiguration();
+            final int width = (int) graphicsConfiguration.getBounds().getWidth();
+            final int height = (int) graphicsConfiguration.getBounds().getHeight();
+            surface = new Surface(width, height, new Location());
+        } else {
+            surface = new Surface((int) FRAME_DIMENSION.getWidth(), (int) FRAME_DIMENSION.getHeight(), new Location());
+        }
         surface.addKeyListener(this);
         surface.addMouseListener(this);
         surface.addMouseMotionListener(this);
@@ -87,10 +92,11 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
         if (FULL_SCREEN) {
             frame.setUndecorated(true);
         } else {
-            frame.setSize((int) (540 * 1.6), 540);
-            frame.setResizable(false);
+            frame.setResizable(true);
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             frame.requestFocus();
+            frame.pack();
+            frame.setLocationRelativeTo(null);
         }
 
         frame.addKeyListener(this);
@@ -109,7 +115,6 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
         if (FULL_SCREEN) {
             graphicsDevice.setFullScreenWindow(frame);
         }
-        surface.createBufferStrategy(3);
     }
 
     private void hideWindow() {
@@ -136,11 +141,7 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
     public void render() {
         surfaceConsumers.forEach(consumer -> consumer.accept(surface));
 
-        final BufferStrategy bufferStrategy = surface.getBufferStrategy();
-        final Graphics graphics = bufferStrategy.getDrawGraphics();
-        graphics.drawImage(surface.getBufferedImage(), 0, 0, surface.getWidth(), surface.getHeight(), null);
-        graphics.dispose();
-        bufferStrategy.show();
+        frame.repaint(System.currentTimeMillis(), 0, 0, frame.getWidth(), frame.getHeight());
     }
 
     @Override
