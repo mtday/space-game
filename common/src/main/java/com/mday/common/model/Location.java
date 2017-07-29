@@ -13,12 +13,12 @@ public class Location {
     /**
      * The coordinate location on the X axis.
      */
-    private final int x;
+    private final double x;
 
     /**
      * The coordinate location on the Y axis.
      */
-    private final int y;
+    private final double y;
 
     /**
      * Default constructor.
@@ -33,7 +33,7 @@ public class Location {
      * @param x the X axis location
      * @param y the Y axis location
      */
-    public Location(final int x, final int y) {
+    public Location(final double x, final double y) {
         this.x = x;
         this.y = y;
     }
@@ -43,7 +43,7 @@ public class Location {
      *
      * @return the X axis location
      */
-    public int getX() {
+    public double getX() {
         return x;
     }
 
@@ -52,7 +52,7 @@ public class Location {
      *
      * @return the Y axis location
      */
-    public int getY() {
+    public double getY() {
         return y;
     }
 
@@ -75,7 +75,7 @@ public class Location {
      * @return a new location with the added coordinate values
      */
     @Nonnull
-    public Location add(final int x, final int y) {
+    public Location add(final double x, final double y) {
         return new Location(getX() + x, getY() + y);
     }
 
@@ -98,7 +98,7 @@ public class Location {
      * @return a new location with the subtracted coordinate values
      */
     @Nonnull
-    public Location subtract(final int x, final int y) {
+    public Location subtract(final double x, final double y) {
         return new Location(getX() - x, getY() - y);
     }
 
@@ -120,7 +120,7 @@ public class Location {
     @Override
     @Nonnull
     public String toString() {
-        return String.format("Location[x=%d, y=%d]", x, y);
+        return String.format("Location[x=%.2f, y=%.2f]", x, y);
     }
 }
 

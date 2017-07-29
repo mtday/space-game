@@ -1,5 +1,8 @@
 package com.mday.client.game;
 
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
 import com.mday.client.event.EventType;
@@ -13,7 +16,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
@@ -64,8 +66,8 @@ public class Runner implements Runnable, EventConsumer {
      * Start processing events in this runner.
      */
     public void start() {
-        final long period = TimeUnit.SECONDS.toNanos(1) / TARGET_FPS;
-        scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(this, 0L, period, TimeUnit.NANOSECONDS);
+        final long period = SECONDS.toNanos(1) / TARGET_FPS;
+        scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(this, 0L, period, NANOSECONDS);
     }
 
     /**

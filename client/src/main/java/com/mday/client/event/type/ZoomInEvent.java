@@ -4,40 +4,41 @@ import static com.mday.client.event.EventType.ZOOM_IN;
 
 import com.mday.client.event.Event;
 
+import java.awt.geom.Point2D;
+
+import javax.annotation.Nullable;
+
 /**
- * Represents the display surface should zoom in.
+ * Event telling the display surface to zoom in.
  */
 public class ZoomInEvent extends Event {
-    private final int x;
-    private final int y;
+    @Nullable
+    private final Point2D.Double point;
+
+    /**
+     * Create an instance of this event.
+     */
+    public ZoomInEvent() {
+        this(null);
+    }
 
     /**
      * Create an instance of this event.
      *
-     * @param x the X coordinate location to zoom in on
-     * @param y the Y coordinate location to zoom in on
+     * @param point the mouse point to use as the focus when zooming in
      */
-    public ZoomInEvent(final int x, final int y) {
+    public ZoomInEvent(@Nullable final Point2D.Double point) {
         super(ZOOM_IN);
-        this.x = x;
-        this.y = y;
+        this.point = point;
     }
 
     /**
-     * Retrieve the X coordinate location to zoom in on.
+     * Retrieve the mouse point to use as the focus when zooming in.
      *
-     * @return the X coordinate location to zoom in on
+     * @return the mouse point to use as the focus when zooming in
      */
-    public int getX() {
-        return x;
-    }
-
-    /**
-     * Retrieve the Y coordinate location to zoom in on.
-     *
-     * @return the Y coordinate location to zoom in on
-     */
-    public int getY() {
-        return y;
+    @Nullable
+    public Point2D.Double getPoint() {
+        return point;
     }
 }

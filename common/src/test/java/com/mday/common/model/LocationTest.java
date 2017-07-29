@@ -9,6 +9,7 @@ import org.junit.Test;
  * Perform testing on the {@link Location} class.
  */
 public class LocationTest {
+    private static final double DELTA = 0.0001;
     /**
      * Make sure the default constructor sets the appropriate axis values.
      */
@@ -16,8 +17,8 @@ public class LocationTest {
     public void testDefaultConstructor() {
         final Location location = new Location();
 
-        assertEquals(0, location.getX());
-        assertEquals(0, location.getY());
+        assertEquals(0, location.getX(), DELTA);
+        assertEquals(0, location.getY(), DELTA);
     }
 
     /**
@@ -27,8 +28,8 @@ public class LocationTest {
     public void testParameterConstructor() {
         final Location location = new Location(-2, -1);
 
-        assertEquals(-2, location.getX());
-        assertEquals(-1, location.getY());
+        assertEquals(-2, location.getX(), DELTA);
+        assertEquals(-1, location.getY(), DELTA);
     }
 
     /**
@@ -58,7 +59,7 @@ public class LocationTest {
     @Test
     public void testHashCode() {
         assertEquals(961, new Location().hashCode());
-        assertEquals(993, new Location(1, 1).hashCode());
+        assertEquals(-33553471, new Location(1, 1).hashCode());
     }
 
     /**
@@ -66,6 +67,6 @@ public class LocationTest {
      */
     @Test
     public void testToString() {
-        assertEquals("Location[x=-1, y=-2]", new Location(-1, -2).toString());
+        assertEquals("Location[x=-1.00, y=-2.00]", new Location(-1, -2).toString());
     }
 }

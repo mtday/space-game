@@ -1,8 +1,8 @@
 package com.mday.client;
 
 import com.mday.client.action.EscapeKeyAction;
-import com.mday.client.action.MinusKeyAction;
-import com.mday.client.action.PlusKeyAction;
+import com.mday.client.action.ZoomOutAction;
+import com.mday.client.action.ZoomInAction;
 import com.mday.client.event.type.UnitAddEvent;
 import com.mday.client.game.EventQueue;
 import com.mday.client.game.Runner;
@@ -10,7 +10,9 @@ import com.mday.client.game.Units;
 import com.mday.client.io.ServerConnector;
 import com.mday.client.ui.Display;
 import com.mday.client.ui.render.BackgroundRenderer;
+import com.mday.client.ui.render.GridRenderer;
 import com.mday.client.ui.render.MousePositionRenderer;
+import com.mday.client.ui.render.ScaleRenderer;
 import com.mday.client.ui.render.UnitRenderer;
 import com.mday.common.model.Location;
 import com.mday.common.model.unit.ReconDroneUnit;
@@ -39,6 +41,8 @@ public class Client {
         final Display display = new Display(eventQueue);
         display.addSurfaceConsumer(new BackgroundRenderer());
         display.addSurfaceConsumer(new UnitRenderer(units));
+        display.addSurfaceConsumer(new ScaleRenderer());
+        display.addSurfaceConsumer(new GridRenderer());
         display.addSurfaceConsumer(mousePositionRenderer);
 
         runner = new Runner(eventQueue, display);
@@ -46,8 +50,8 @@ public class Client {
         runner.addEventConsumer(display);
         runner.addEventConsumer(units);
         runner.addEventConsumer(new EscapeKeyAction(eventQueue));
-        runner.addEventConsumer(new PlusKeyAction(eventQueue));
-        runner.addEventConsumer(new MinusKeyAction(eventQueue));
+        runner.addEventConsumer(new ZoomInAction(eventQueue));
+        runner.addEventConsumer(new ZoomOutAction(eventQueue));
         runner.addEventConsumer(mousePositionRenderer);
 
         eventQueue.add(new UnitAddEvent(new ShipyardUnit("shipyard", "me", new Location(0, 0))));

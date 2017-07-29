@@ -10,27 +10,34 @@ import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
 import com.mday.common.model.Location;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JPanel;
 
 /**
  * Represents the display surface on which the game graphics will be drawn.
  */
-public class Surface extends JPanel {
+public class Surface extends JPanel implements SurfaceConsumer {
     private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(Surface.class);
 
     @Nonnull
     private final transient BufferedImage bufferedImage;
 
-    private int zoom = 20;
+    private double scale = 1.0;
+    private double scaleGoal = scale;
+    private double scaleIncrement = 0;
 
     @Nonnull
     private final transient Location center;
@@ -57,6 +64,13 @@ public class Surface extends JPanel {
         // We call getFontMetrics here before the JFrame is shown to prevent an empty frame from being displayed.
         graphics.setFont(new Font("Dialog", Font.PLAIN, 12));
         graphics.getFontMetrics();
+    }
+
+    @Override
+    public void accept(@Nonnull final Surface surface) {
+        if (Math.abs(scale - scaleGoal) > Math.abs(scaleIncrement / 2)) {
+            scale += scaleIncrement;
+        }
     }
 
     @Override
@@ -87,34 +101,68 @@ public class Surface extends JPanel {
     }
 
     /**
-     * Retrieve the current zoom level.
+     * Retrieve the current scale, which is the ratio of surface pixels to location points.
      *
-     * @return the current zoom level
+     * @return the current scale
      */
-    public int getZoom() {
-        return zoom;
+    public double getScale() {
+        return scale;
     }
 
     /**
-     * Zoom in on the coordinate indicated.
+     * Zoom in on the point indicated.
      *
-     * @param x the X coordinate on which to zoom in on
-     * @param y the Y coordinate on which to zoom in on
+     * @param point the point on the surface on which to zoom in
      */
-    public void zoomIn(final int x, final int y) {
-        zoom++;
-        // TODO: update center location
+    public void zoomIn(@Nullable final Point2D.Double point) {
+        // Scale is the ratio of surface pixels to location points.
+        // Zooming in means we want more pixels per location point.
+        // Increase scale by 33%
+        scaleGoal *= 3.0 / 2.0;
+        scaleIncrement = (scaleGoal - scale) / 12;
+
+        // TODO: update center location based on point
     }
 
     /**
-     * Zoom out from the coordinate indicated.
+     * Zoom out from the point indicated.
      *
-     * @param x the X coordinate from which to zoom out of
-     * @param y the Y coordinate from which to zoom out of
+     * @param point the point on the surface from which to zoom out
      */
-    public void zoomOut(final int x, final int y) {
-        zoom--;
-        // TODO: update center location
+    public void zoomOut(@Nullable final Point2D.Double point) {
+        // Scale is the ratio of surface pixels to location points.
+        // Zooming out means we want fewer pixels per location point.
+        // Decrease scale by 33%
+        scaleGoal *= 2.0 / 3.0;
+        scaleIncrement = (scaleGoal - scale) / 12;
+
+        // TODO: update center location based on point
+    }
+
+    /**
+     * Convert the specified location value into a point on the surface.
+     *
+     * @param location the location to convert
+     * @return a point representing the spot on the surface corresponding to the provided location
+     */
+    @Nonnull
+    public Point2D.Double toPoint(@Nonnull final Location location) {
+        return new Point2D.Double(
+                (getWidth() / 2.0) - (location.getX() - center.getX()) * getScale(),
+                (getHeight() / 2.0) - (location.getY() - center.getY()) * getScale());
+    }
+
+    /**
+     * Convert the specified surface point value into a game location.
+     *
+     * @param point the surface point to convert
+     * @return a location corresponding to the provided surface point
+     */
+    @Nonnull
+    public Location toLocation(@Nonnull final Point2D.Double point) {
+        return new Location(
+                point.getX() - (getWidth() / 2.0) / scale + center.getX(),
+                point.getY() - (getHeight() / 2.0) / scale + center.getY());
     }
 
     /**
@@ -134,7 +182,7 @@ public class Surface extends JPanel {
      */
     @Nonnull
     public Location getTopLeft() {
-        return center.add((int) (-getSize().getWidth() / 2), (int) (-getSize().getHeight() / 2));
+        return center.add((int) (-getSize().getWidth() / scale / 2), (int) (-getSize().getHeight() / scale / 2));
     }
 
     /**
@@ -144,7 +192,7 @@ public class Surface extends JPanel {
      */
     @Nonnull
     public Location getTopMid() {
-        return center.add(0, (int) (-getSize().getHeight() / 2));
+        return center.add(0, (int) (-getSize().getHeight() / scale / 2));
     }
 
     /**
@@ -154,7 +202,7 @@ public class Surface extends JPanel {
      */
     @Nonnull
     public Location getTopRight() {
-        return center.add((int) (getSize().getWidth() / 2), (int) (-getSize().getHeight() / 2));
+        return center.add((int) (getSize().getWidth() / scale / 2), (int) (-getSize().getHeight() / scale / 2));
     }
 
     /**
@@ -164,7 +212,7 @@ public class Surface extends JPanel {
      */
     @Nonnull
     public Location getMidLeft() {
-        return center.add((int) (-getSize().getWidth() / 2), 0);
+        return center.add((int) (-getSize().getWidth() / scale / 2), 0);
     }
 
     /**
@@ -174,7 +222,7 @@ public class Surface extends JPanel {
      */
     @Nonnull
     public Location getMidRight() {
-        return center.add((int) (getSize().getWidth() / 2), 0);
+        return center.add((int) (getSize().getWidth() / scale / 2), 0);
     }
 
     /**
@@ -184,7 +232,7 @@ public class Surface extends JPanel {
      */
     @Nonnull
     public Location getBottomLeft() {
-        return center.add((int) (-getSize().getWidth() / 2), (int) (getSize().getHeight() / 2));
+        return center.add((int) (-getSize().getWidth() / scale / 2), (int) (getSize().getHeight() / scale / 2));
     }
 
     /**
@@ -194,7 +242,7 @@ public class Surface extends JPanel {
      */
     @Nonnull
     public Location getBottomMid() {
-        return center.add(0, (int) (getSize().getHeight() / 2));
+        return center.add(0, (int) (getSize().getHeight() / scale / 2));
     }
 
     /**
@@ -204,7 +252,7 @@ public class Surface extends JPanel {
      */
     @Nonnull
     public Location getBottomRight() {
-        return center.add((int) (getSize().getWidth() / 2), (int) (getSize().getHeight() / 2));
+        return center.add((int) (getSize().getWidth() / scale / 2), (int) (getSize().getHeight() / scale / 2));
     }
 
     /**

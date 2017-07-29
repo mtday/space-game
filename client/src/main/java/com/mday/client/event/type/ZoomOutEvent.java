@@ -1,43 +1,44 @@
 package com.mday.client.event.type;
 
-import static com.mday.client.event.EventType.ZOOM_IN;
+import static com.mday.client.event.EventType.ZOOM_OUT;
 
 import com.mday.client.event.Event;
 
+import java.awt.geom.Point2D;
+
+import javax.annotation.Nullable;
+
 /**
- * Represents the display surface should zoom out.
+ * Event telling the display surface to zoom out.
  */
 public class ZoomOutEvent extends Event {
-    private final int x;
-    private final int y;
+    @Nullable
+    private final Point2D.Double point;
+
+    /**
+     * Create an instance of this event.
+     */
+    public ZoomOutEvent() {
+        this(null);
+    }
 
     /**
      * Create an instance of this event.
      *
-     * @param x the X coordinate location to zoom out of
-     * @param y the Y coordinate location to zoom out of
+     * @param point the mouse point to use as the focus when zooming out
      */
-    public ZoomOutEvent(final int x, final int y) {
-        super(ZOOM_IN);
-        this.x = x;
-        this.y = y;
+    public ZoomOutEvent(@Nullable final Point2D.Double point) {
+        super(ZOOM_OUT);
+        this.point = point;
     }
 
     /**
-     * Retrieve the X coordinate location to zoom out of.
+     * Retrieve the mouse point to use as the focus when zooming out.
      *
-     * @return the X coordinate location to zoom out of
+     * @return the mouse point to use as the focus when zooming out
      */
-    public int getX() {
-        return x;
-    }
-
-    /**
-     * Retrieve the Y coordinate location to zoom out of.
-     *
-     * @return the Y coordinate location to zoom out of
-     */
-    public int getY() {
-        return y;
+    @Nullable
+    public Point2D.Double getPoint() {
+        return point;
     }
 }

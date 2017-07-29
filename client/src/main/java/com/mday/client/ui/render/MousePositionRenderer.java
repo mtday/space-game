@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Point2D;
 
 import javax.annotation.Nonnull;
 
@@ -25,11 +26,16 @@ public class MousePositionRenderer implements SurfaceConsumer, EventConsumer {
 
     @Override
     public void accept(@Nonnull final Surface surface) {
-        final Location mouseLocation = surface.getTopLeft().add(x, y);
         final Graphics2D graphics = surface.getDrawGraphics();
         graphics.setColor(new Color(200, 200, 200));
-        graphics.drawString("X: " + mouseLocation.getX(), 10, 20);
-        graphics.drawString("Y: " + mouseLocation.getY(), 10, 40);
+
+        final Point2D.Double point = new Point2D.Double(x, y);
+        final Location location = surface.toLocation(point);
+
+        graphics.drawString(String.format("PX: %.2f", point.getX()), 10, 20);
+        graphics.drawString(String.format("PY: %.2f", point.getY()), 10, 40);
+        graphics.drawString(String.format("LX: %.2f", location.getX()), 10, 60);
+        graphics.drawString(String.format("LY: %.2f", location.getY()), 10, 80);
     }
 
     @Override

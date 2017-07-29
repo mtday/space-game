@@ -3,6 +3,8 @@ package com.mday.client.ui;
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
 import com.mday.client.event.EventType;
+import com.mday.client.event.type.ZoomInEvent;
+import com.mday.client.event.type.ZoomOutEvent;
 import com.mday.client.game.EventQueue;
 import com.mday.common.model.Location;
 import org.slf4j.Logger;
@@ -81,6 +83,7 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
         surface.addMouseListener(this);
         surface.addMouseMotionListener(this);
         surface.addMouseWheelListener(this);
+        addSurfaceConsumer(surface);
         return surface;
     }
 
@@ -132,6 +135,10 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
             showWindow();
         } else if (event.getType() == EventType.QUIT) {
             hideWindow();
+        } else if (event instanceof ZoomInEvent) {
+            surface.zoomIn(((ZoomInEvent) event).getPoint());
+        } else if (event instanceof ZoomOutEvent) {
+            surface.zoomOut(((ZoomOutEvent) event).getPoint());
         }
     }
 
