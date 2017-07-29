@@ -2,10 +2,7 @@ package com.mday.client.game;
 
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
-import com.mday.client.event.type.unit.UnitAddEvent;
-import com.mday.client.event.type.unit.UnitDeselectEvent;
-import com.mday.client.event.type.unit.UnitRemoveEvent;
-import com.mday.client.event.type.unit.UnitSelectEvent;
+import com.mday.client.event.type.unit.*;
 import com.mday.client.ui.CoordinateSystem;
 import com.mday.common.model.Location;
 import com.mday.common.model.Unit;
@@ -13,15 +10,14 @@ import com.mday.common.model.UnitType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Manages the units that are known in the game as a mapping between unique unit id and unit.
@@ -31,19 +27,25 @@ public class Units implements EventConsumer {
 
     @Nonnull
     private final CoordinateSystem coordinateSystem;
+    @Nonnull
+    private final UnitMover unitMover;
 
     @Nonnull
     private final ConcurrentHashMap<String, Unit> byId = new ConcurrentHashMap<>();
     @Nonnull
     private final ConcurrentHashMap<UnitType, ConcurrentSkipListSet<Unit>> byType = new ConcurrentHashMap<>();
 
+    private boolean unitsSelected = false;
+
     /**
      * Create an instance of this class.
      *
      * @param coordinateSystem the coordinate system used to manage locations on the draw surface
+     * @param unitMover        the mover responsible for relocating units
      */
-    public Units(@Nonnull final CoordinateSystem coordinateSystem) {
+    public Units(@Nonnull final CoordinateSystem coordinateSystem, @Nonnull final UnitMover unitMover) {
         this.coordinateSystem = coordinateSystem;
+        this.unitMover = unitMover;
     }
 
     /**
@@ -54,6 +56,16 @@ public class Units implements EventConsumer {
     @Nonnull
     public Collection<Unit> getAll() {
         return byId.values();
+    }
+
+    /**
+     * Retrieve a collection of all the selected units.
+     *
+     * @return a collection of all the selected units
+     */
+    @Nonnull
+    public Collection<Unit> getSelected() {
+        return getAll().stream().filter(Unit::isSelected).collect(toList());
     }
 
     /**
@@ -78,25 +90,43 @@ public class Units implements EventConsumer {
         return Optional.<Set<Unit>>ofNullable(byType.get(type)).orElseGet(Collections::emptySet);
     }
 
+    /**
+     * Whether any units are currently selected.
+     *
+     * @return whether any units are currently selected
+     */
+    public boolean isUnitsSelected() {
+        return unitsSelected;
+    }
+
     @Override
     public void accept(@Nonnull final Event event) {
         if (event instanceof UnitAddEvent) {
             final UnitAddEvent unitAddEvent = (UnitAddEvent) event;
+            unitsSelected |= unitAddEvent.getUnit().isSelected();
             byId.put(unitAddEvent.getUnit().getId(), unitAddEvent.getUnit());
             byType.computeIfAbsent(unitAddEvent.getUnit().getUnitType(), ignored -> new ConcurrentSkipListSet<>())
                     .add(unitAddEvent.getUnit());
         } else if (event instanceof UnitRemoveEvent) {
             final UnitRemoveEvent unitRemoveEvent = (UnitRemoveEvent) event;
             byId.remove(unitRemoveEvent.getUnit().getId());
-            Optional.ofNullable(byType.get(unitRemoveEvent.getUnit().getUnitType()))
+            ofNullable(byType.get(unitRemoveEvent.getUnit().getUnitType()))
                     .ifPresent(set -> set.remove(unitRemoveEvent.getUnit()));
+            unitsSelected = getAll().stream().anyMatch(Unit::isSelected);
         } else if (event instanceof UnitSelectEvent) {
             final UnitSelectEvent unitSelectionEvent = (UnitSelectEvent) event;
             final Location topLeft = coordinateSystem.toLocation(unitSelectionEvent.getTopLeft());
             final Location botRight = coordinateSystem.toLocation(unitSelectionEvent.getBottomRight());
-            getAll().forEach(unit -> unit.setSelected(unit.getLocation().isInside(topLeft, botRight)));
+            getAll().forEach(unit ->
+                    unit.setSelected(unit.getLocation().isInside(topLeft, botRight, unit.getRadius())));
+            unitsSelected = getAll().stream().anyMatch(Unit::isSelected);
         } else if (event instanceof UnitDeselectEvent) {
             getAll().forEach(unit -> unit.setSelected(false));
+            unitsSelected = false;
+        } else if (event instanceof UnitMoveEvent) {
+            final UnitMoveEvent unitMoveEvent = (UnitMoveEvent) event;
+            final List<Unit> selectedMoveable = getSelected().stream().filter(Unit::isMoveable).collect(toList());
+            unitMover.add(selectedMoveable, coordinateSystem.toLocation(unitMoveEvent.getDestination()));
         }
     }
 }

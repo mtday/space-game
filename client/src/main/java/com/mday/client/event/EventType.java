@@ -35,6 +35,11 @@ public enum EventType {
     UNIT_DESELECT,
 
     /**
+     * Move the selected units to a destination point.
+     */
+    UNIT_MOVE,
+
+    /**
      * Zoom in on the display surface.
      */
     ZOOM_IN,

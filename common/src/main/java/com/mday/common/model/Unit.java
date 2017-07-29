@@ -1,10 +1,9 @@
 package com.mday.common.model;
 
-import java.util.Objects;
-
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * The base class for units.
@@ -16,7 +15,10 @@ public class Unit implements Comparable<Unit> {
     private final String id;
     @Nonnull
     private Location location;
+    private double radius = 10.0;
     private boolean selected = false;
+    private boolean moveable = false;
+    private double speed = 10.0;
 
     /**
      * Create a new unit instance.
@@ -71,6 +73,24 @@ public class Unit implements Comparable<Unit> {
     }
 
     /**
+     * Retrieve the radius indicating the size of this unit.
+     *
+     * @return the radius indicating the size of this unit
+     */
+    public double getRadius() {
+        return radius;
+    }
+
+    /**
+     * Set the new radius value indicating the size of this unit.
+     *
+     * @param radius the new radius value indicating the size of this unit
+     */
+    public void setRadius(final double radius) {
+        this.radius = radius;
+    }
+
+    /**
      * Whether this unit is currently selected.
      *
      * @return this unit is currently selected
@@ -86,6 +106,42 @@ public class Unit implements Comparable<Unit> {
      */
     public void setSelected(final boolean selected) {
         this.selected = selected;
+    }
+
+    /**
+     * Retrieve whether this unit can be moved.
+     *
+     * @return whether this unit can be moved
+     */
+    public boolean isMoveable() {
+        return moveable;
+    }
+
+    /**
+     * Set whether this unit can be moved.
+     *
+     * @param moveable the new value indicating whether this unit can be moved
+     */
+    public void setMoveable(final boolean moveable) {
+        this.moveable = moveable;
+    }
+
+    /**
+     * Retrieve the movement speed for this unit.
+     *
+     * @return the movement speed for this unit
+     */
+    public double getSpeed() {
+        return speed;
+    }
+
+    /**
+     * Set the movement speed for this unit.
+     *
+     * @param speed the new value indicating the movement speed for this unit
+     */
+    public void setSpeed(final double speed) {
+        this.speed = speed;
     }
 
     @Override
@@ -110,7 +166,6 @@ public class Unit implements Comparable<Unit> {
     @Override
     @Nonnull
     public String toString() {
-        return String.format("Unit[unitType=%s, id=%s, location=%s, selected=%b]",
-                getUnitType().name(), getId(), getLocation(), isSelected());
+        return String.format("Unit[unitType=%s, id=%s, location=%s]", getUnitType().name(), getId(), getLocation());
     }
 }

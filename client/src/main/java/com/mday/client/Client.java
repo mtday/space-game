@@ -7,6 +7,7 @@ import com.mday.client.action.key.ZoomKeyAction;
 import com.mday.client.event.type.unit.UnitAddEvent;
 import com.mday.client.game.EventQueue;
 import com.mday.client.game.Runner;
+import com.mday.client.game.UnitMover;
 import com.mday.client.game.Units;
 import com.mday.client.io.ServerConnector;
 import com.mday.client.ui.CoordinateSystem;
@@ -37,13 +38,13 @@ public class Client {
         serverConnector = new ServerConnector("localhost", 33445, eventQueue);
 
         final CoordinateSystem coordinateSystem = new CoordinateSystem();
-        final Units units = new Units(coordinateSystem);
+        final UnitMover unitMover = new UnitMover();
+        final Units units = new Units(coordinateSystem, unitMover);
 
         final MousePositionRenderer mousePositionRenderer = new MousePositionRenderer();
         final MouseSelectionRenderer mouseSelectionRenderer = new MouseSelectionRenderer();
 
         final Display display = new Display(eventQueue, coordinateSystem);
-        display.addSurfaceConsumer(coordinateSystem);
         display.addSurfaceConsumer(new BackgroundRenderer());
         display.addSurfaceConsumer(new UnitRenderer(units));
         display.addSurfaceConsumer(new ScaleRenderer());
@@ -52,6 +53,8 @@ public class Client {
         display.addSurfaceConsumer(mouseSelectionRenderer);
 
         runner = new Runner(eventQueue, display);
+        runner.addClockTickObserver(coordinateSystem);
+        runner.addClockTickObserver(unitMover);
         runner.addEventConsumer(coordinateSystem);
         runner.addEventConsumer(serverConnector);
         runner.addEventConsumer(display);
@@ -61,7 +64,7 @@ public class Client {
         runner.addEventConsumer(new ArrowKeyAction(eventQueue));
         runner.addEventConsumer(mousePositionRenderer);
         runner.addEventConsumer(mouseSelectionRenderer);
-        runner.addEventConsumer(new MouseSelectionAction(eventQueue));
+        runner.addEventConsumer(new MouseSelectionAction(eventQueue, units));
 
         eventQueue.add(new UnitAddEvent(new ReconDroneUnit("recon", new Location(-100, -50), "me")));
         eventQueue.add(new UnitAddEvent(new ShipyardUnit("shipyard", new Location(0, 0), "me")));

@@ -7,35 +7,47 @@ public enum ShipType {
     /**
      * A ship yard is where additional ships can be created.
      */
-    SHIPYARD(22.0),
+    SHIPYARD(25.0, 2.0),
 
     /**
      * A recon drone is used to perform scouting reconnaissance.
      */
-    RECON_DRONE(8.0),
+    RECON_DRONE(8.0, 40.0),
 
     /**
      * A research vessel is responsible for technology research.
      */
-    RESEARCH_VESSEL(13.0);
+    RESEARCH_VESSEL(13.0, 5.0);
 
-    private final double size;
+    private final double radius;
+    private final double speed;
 
     /**
-     * Create a unit type.
+     * Create a ship type.
      *
-     * @param size the size of the unit
+     * @param radius the radius indicating the size of the ship
+     * @param speed  the base movement speed for this ship type
      */
-    ShipType(final double size) {
-        this.size = size;
+    ShipType(final double radius, final double speed) {
+        this.radius = radius;
+        this.speed = speed;
     }
 
     /**
-     * Retrieve the size of the unit.
+     * Retrieve the radius indicating the size of the ship.
      *
-     * @return the size of the unit
+     * @return the radius indicating the size of the ship
      */
-    public double getSize() {
-        return size;
+    public double getRadius() {
+        return radius;
+    }
+
+    /**
+     * Retrieve the base movement speed for this ship type.
+     *
+     * @return the base movement speed for this ship type
+     */
+    public double getSpeed() {
+        return speed;
     }
 }

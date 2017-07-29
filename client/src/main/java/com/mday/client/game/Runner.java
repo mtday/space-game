@@ -1,8 +1,6 @@
 package com.mday.client.game;
 
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
+import com.mday.client.event.ClockTickObserver;
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
 import com.mday.client.event.EventType;
@@ -11,13 +9,15 @@ import com.mday.client.ui.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
-import javax.annotation.Nonnull;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Responsible for managing the game event loop.
@@ -36,6 +36,8 @@ public class Runner implements Runnable, EventConsumer {
     private final ScheduledExecutorService scheduledExecutorService;
     @Nonnull
     private final Queue<EventConsumer> eventConsumers;
+    @Nonnull
+    private final Queue<ClockTickObserver> clockTickObservers;
 
     private ScheduledFuture<?> scheduledFuture = null;
 
@@ -51,6 +53,7 @@ public class Runner implements Runnable, EventConsumer {
         this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         this.eventConsumers = new ConcurrentLinkedQueue<>();
         this.eventConsumers.add(this);
+        this.clockTickObservers = new ConcurrentLinkedQueue<>();
     }
 
     /**
@@ -60,6 +63,15 @@ public class Runner implements Runnable, EventConsumer {
      */
     public void addEventConsumer(@Nonnull final EventConsumer eventConsumer) {
         this.eventConsumers.add(eventConsumer);
+    }
+
+    /**
+     * Add the provided clock tick observer.
+     *
+     * @param clockTickObserver the clock tick observer that should receive notification of each clock tick
+     */
+    public void addClockTickObserver(@Nonnull final ClockTickObserver clockTickObserver) {
+        this.clockTickObservers.add(clockTickObserver);
     }
 
     /**
@@ -81,6 +93,7 @@ public class Runner implements Runnable, EventConsumer {
     @Override
     public void run() {
         try {
+            notifyClockTickObservers();
             consumeEvents();
             updateDisplay();
         } catch (final Exception exception) {
@@ -89,6 +102,10 @@ public class Runner implements Runnable, EventConsumer {
             eventQueue.add(new QuitEvent());
             consumeEvents();
         }
+    }
+
+    private void notifyClockTickObservers() {
+        clockTickObservers.forEach(ClockTickObserver::tick);
     }
 
     private void consumeEvents() {

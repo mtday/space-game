@@ -1,5 +1,6 @@
 package com.mday.client.ui;
 
+import com.mday.client.event.ClockTickObserver;
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
 import com.mday.client.event.type.coordinate.*;
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * Represents the display surface on which the game graphics will be drawn.
  */
-public class CoordinateSystem implements SurfaceConsumer, EventConsumer {
+public class CoordinateSystem implements ClockTickObserver, EventConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(CoordinateSystem.class);
 
     private int width;
@@ -89,7 +90,7 @@ public class CoordinateSystem implements SurfaceConsumer, EventConsumer {
     }
 
     @Override
-    public void accept(@Nonnull final Surface surface) {
+    public void tick() {
         if (Math.abs(scale - scaleGoal) > Math.abs(scaleIncrement / 2)) {
             scale += scaleIncrement;
         }

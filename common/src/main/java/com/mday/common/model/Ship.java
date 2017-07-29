@@ -1,10 +1,10 @@
 package com.mday.common.model;
 
-import static com.mday.common.model.UnitType.SHIP;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import javax.annotation.Nonnull;
+
+import static com.mday.common.model.UnitType.SHIP;
 
 /**
  * The base class for ships.
@@ -30,6 +30,9 @@ public class Ship extends Unit {
         super(SHIP, id, location);
         this.shipType = shipType;
         this.owner = owner;
+        setRadius(shipType.getRadius());
+        setSpeed(shipType.getSpeed());
+        setMoveable(true);
     }
 
     /**
@@ -73,7 +76,7 @@ public class Ship extends Unit {
     @Override
     @Nonnull
     public String toString() {
-        return String.format("Ship[unit=%s, shipType=%s, owner=%s, direction=%d]",
-                super.toString(), getShipType().name(), getOwner(), getDirection());
+        return String.format("Ship[unit=%s, shipType=%s, owner=%s]",
+                super.toString(), getShipType().name(), getOwner());
     }
 }

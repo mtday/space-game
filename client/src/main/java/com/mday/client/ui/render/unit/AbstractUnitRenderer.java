@@ -3,19 +3,17 @@ package com.mday.client.ui.render.unit;
 import com.mday.client.ui.Surface;
 import com.mday.common.model.Unit;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import javax.annotation.Nonnull;
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.function.BiConsumer;
-
-import javax.annotation.Nonnull;
 
 /**
  * The base class for unit renderers.
  */
 public abstract class AbstractUnitRenderer implements BiConsumer<Unit, Surface> {
-    private static final int SELECTION_SIZE = 35;
+    private static final double SELECTION_RADIUS = 35.0;
 
     /**
      * Draw the selection indicator over the unit if it is selected.
@@ -25,8 +23,8 @@ public abstract class AbstractUnitRenderer implements BiConsumer<Unit, Surface> 
      */
     protected void drawSelection(@Nonnull final Unit unit, @Nonnull final Surface surface) {
         if (unit.isSelected()) {
-            final double selectionDiameter = SELECTION_SIZE * surface.getCoordinateSystem().getScale();
-            final double selectionRadius = selectionDiameter / 2;
+            final double selectionRadius = SELECTION_RADIUS * surface.getCoordinateSystem().getScale();
+            final double selectionDiameter = selectionRadius * 2;
 
             final Point2D.Double center = surface.getCoordinateSystem().toPoint(unit.getLocation());
 
