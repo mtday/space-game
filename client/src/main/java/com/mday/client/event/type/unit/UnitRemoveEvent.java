@@ -1,4 +1,4 @@
-package com.mday.client.event.type;
+package com.mday.client.event.type.unit;
 
 import static com.mday.client.event.EventType.UNIT_REMOVE;
 

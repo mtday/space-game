@@ -1,4 +1,4 @@
-package com.mday.client.event.type;
+package com.mday.client.event.type.input;
 
 import static com.mday.client.event.EventType.KEY;
 

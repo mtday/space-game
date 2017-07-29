@@ -1,22 +1,21 @@
-package com.mday.client.action;
+package com.mday.client.action.mouse;
+
+import com.mday.client.event.Event;
+import com.mday.client.event.EventConsumer;
+import com.mday.client.event.type.input.MouseEvent;
+import com.mday.client.event.type.unit.UnitDeselectEvent;
+import com.mday.client.event.type.unit.UnitSelectEvent;
+import com.mday.client.game.EventQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
+import java.awt.geom.Point2D;
 
 import static java.awt.event.MouseEvent.BUTTON1;
 import static java.awt.event.MouseEvent.MOUSE_DRAGGED;
 import static java.awt.event.MouseEvent.MOUSE_PRESSED;
 import static java.awt.event.MouseEvent.MOUSE_RELEASED;
-
-import com.mday.client.event.Event;
-import com.mday.client.event.EventConsumer;
-import com.mday.client.event.type.MouseEvent;
-import com.mday.client.event.type.UnitDeselectEvent;
-import com.mday.client.event.type.UnitSelectEvent;
-import com.mday.client.game.EventQueue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.awt.geom.Point2D;
-
-import javax.annotation.Nonnull;
 
 /**
  * Responsible for drawing the mouse selection rectangle.

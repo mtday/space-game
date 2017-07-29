@@ -1,8 +1,12 @@
-package com.mday.client.action;
+package com.mday.client.action.key;
 
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
-import com.mday.client.event.type.*;
+import com.mday.client.event.type.coordinate.PanDownEvent;
+import com.mday.client.event.type.coordinate.PanLeftEvent;
+import com.mday.client.event.type.coordinate.PanRightEvent;
+import com.mday.client.event.type.coordinate.PanUpEvent;
+import com.mday.client.event.type.input.KeyEvent;
 import com.mday.client.game.EventQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

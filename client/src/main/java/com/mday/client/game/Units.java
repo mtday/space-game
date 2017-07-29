@@ -2,10 +2,10 @@ package com.mday.client.game;
 
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
-import com.mday.client.event.type.UnitAddEvent;
-import com.mday.client.event.type.UnitDeselectEvent;
-import com.mday.client.event.type.UnitRemoveEvent;
-import com.mday.client.event.type.UnitSelectEvent;
+import com.mday.client.event.type.unit.UnitAddEvent;
+import com.mday.client.event.type.unit.UnitDeselectEvent;
+import com.mday.client.event.type.unit.UnitRemoveEvent;
+import com.mday.client.event.type.unit.UnitSelectEvent;
 import com.mday.client.ui.CoordinateSystem;
 import com.mday.common.model.Location;
 import com.mday.common.model.Unit;

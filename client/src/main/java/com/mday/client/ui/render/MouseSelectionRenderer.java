@@ -7,7 +7,7 @@ import static java.awt.event.MouseEvent.MOUSE_RELEASED;
 
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
-import com.mday.client.event.type.MouseEvent;
+import com.mday.client.event.type.input.MouseEvent;
 import com.mday.client.ui.Surface;
 import com.mday.client.ui.SurfaceConsumer;
 import org.slf4j.Logger;

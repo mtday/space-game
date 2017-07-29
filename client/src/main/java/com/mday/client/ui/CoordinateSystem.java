@@ -2,7 +2,7 @@ package com.mday.client.ui;
 
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
-import com.mday.client.event.type.*;
+import com.mday.client.event.type.coordinate.*;
 import com.mday.common.model.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

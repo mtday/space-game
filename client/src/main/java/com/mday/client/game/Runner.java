@@ -6,7 +6,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
 import com.mday.client.event.EventType;
-import com.mday.client.event.type.QuitEvent;
+import com.mday.client.event.type.game.QuitEvent;
 import com.mday.client.ui.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

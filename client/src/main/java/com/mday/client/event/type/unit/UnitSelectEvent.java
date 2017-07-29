@@ -1,12 +1,11 @@
-package com.mday.client.event.type;
-
-import static com.mday.client.event.EventType.UNIT_SELECT;
+package com.mday.client.event.type.unit;
 
 import com.mday.client.event.Event;
 
+import javax.annotation.Nonnull;
 import java.awt.geom.Point2D;
 
-import javax.annotation.Nonnull;
+import static com.mday.client.event.EventType.UNIT_SELECT;
 
 /**
  * An event representing the mouse being used to select a rectangular area on the display surface.

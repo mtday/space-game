@@ -1,10 +1,10 @@
 package com.mday.client;
 
-import com.mday.client.action.ArrowKeyAction;
-import com.mday.client.action.EscapeKeyAction;
-import com.mday.client.action.MouseSelectionAction;
-import com.mday.client.action.ZoomKeyAction;
-import com.mday.client.event.type.UnitAddEvent;
+import com.mday.client.action.key.ArrowKeyAction;
+import com.mday.client.action.key.EscapeKeyAction;
+import com.mday.client.action.mouse.MouseSelectionAction;
+import com.mday.client.action.key.ZoomKeyAction;
+import com.mday.client.event.type.unit.UnitAddEvent;
 import com.mday.client.game.EventQueue;
 import com.mday.client.game.Runner;
 import com.mday.client.game.Units;
@@ -12,6 +12,9 @@ import com.mday.client.io.ServerConnector;
 import com.mday.client.ui.CoordinateSystem;
 import com.mday.client.ui.Display;
 import com.mday.client.ui.render.*;
+import com.mday.client.ui.render.debug.GridRenderer;
+import com.mday.client.ui.render.debug.MousePositionRenderer;
+import com.mday.client.ui.render.debug.ScaleRenderer;
 import com.mday.common.model.Location;
 import com.mday.common.model.unit.ReconDroneUnit;
 import com.mday.common.model.unit.ResearchVesselUnit;

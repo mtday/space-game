@@ -1,12 +1,11 @@
-package com.mday.client.event.type;
-
-import static com.mday.client.event.EventType.ZOOM_OUT;
+package com.mday.client.event.type.coordinate;
 
 import com.mday.client.event.Event;
 
+import javax.annotation.Nullable;
 import java.awt.geom.Point2D;
 
-import javax.annotation.Nullable;
+import static com.mday.client.event.EventType.ZOOM_OUT;
 
 /**
  * Event telling the display surface to zoom out.

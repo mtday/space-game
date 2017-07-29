@@ -1,4 +1,4 @@
-package com.mday.client.event.type;
+package com.mday.client.event.type.game;
 
 import static com.mday.client.event.EventType.QUIT;
 

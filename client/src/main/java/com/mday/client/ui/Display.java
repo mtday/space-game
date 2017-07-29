@@ -151,56 +151,56 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
 
     @Override
     public void keyTyped(@Nonnull final KeyEvent keyEvent) {
-        eventQueue.add(new com.mday.client.event.type.KeyEvent(keyEvent));
+        eventQueue.add(new com.mday.client.event.type.input.KeyEvent(keyEvent));
     }
 
     @Override
     public void keyPressed(@Nonnull final KeyEvent keyEvent) {
-        eventQueue.add(new com.mday.client.event.type.KeyEvent(keyEvent));
+        eventQueue.add(new com.mday.client.event.type.input.KeyEvent(keyEvent));
     }
 
     @Override
     public void keyReleased(@Nonnull final KeyEvent keyEvent) {
-        eventQueue.add(new com.mday.client.event.type.KeyEvent(keyEvent));
+        eventQueue.add(new com.mday.client.event.type.input.KeyEvent(keyEvent));
     }
 
     @Override
     public void mouseClicked(@Nonnull final MouseEvent mouseEvent) {
-        eventQueue.add(new com.mday.client.event.type.MouseEvent(mouseEvent));
+        eventQueue.add(new com.mday.client.event.type.input.MouseEvent(mouseEvent));
     }
 
     @Override
     public void mousePressed(@Nonnull final MouseEvent mouseEvent) {
-        eventQueue.add(new com.mday.client.event.type.MouseEvent(mouseEvent));
+        eventQueue.add(new com.mday.client.event.type.input.MouseEvent(mouseEvent));
     }
 
     @Override
     public void mouseReleased(@Nonnull final MouseEvent mouseEvent) {
-        eventQueue.add(new com.mday.client.event.type.MouseEvent(mouseEvent));
+        eventQueue.add(new com.mday.client.event.type.input.MouseEvent(mouseEvent));
     }
 
     @Override
     public void mouseEntered(@Nonnull final MouseEvent mouseEvent) {
-        eventQueue.add(new com.mday.client.event.type.MouseEvent(mouseEvent));
+        eventQueue.add(new com.mday.client.event.type.input.MouseEvent(mouseEvent));
     }
 
     @Override
     public void mouseExited(@Nonnull final MouseEvent mouseEvent) {
-        eventQueue.add(new com.mday.client.event.type.MouseEvent(mouseEvent));
+        eventQueue.add(new com.mday.client.event.type.input.MouseEvent(mouseEvent));
     }
 
     @Override
     public void mouseDragged(@Nonnull final MouseEvent mouseEvent) {
-        eventQueue.add(new com.mday.client.event.type.MouseEvent(mouseEvent));
+        eventQueue.add(new com.mday.client.event.type.input.MouseEvent(mouseEvent));
     }
 
     @Override
     public void mouseMoved(@Nonnull final MouseEvent mouseEvent) {
-        eventQueue.add(new com.mday.client.event.type.MouseEvent(mouseEvent));
+        eventQueue.add(new com.mday.client.event.type.input.MouseEvent(mouseEvent));
     }
 
     @Override
     public void mouseWheelMoved(@Nonnull final MouseWheelEvent mouseWheelEvent) {
-        eventQueue.add(new com.mday.client.event.type.MouseWheelEvent(mouseWheelEvent));
+        eventQueue.add(new com.mday.client.event.type.input.MouseWheelEvent(mouseWheelEvent));
     }
 }

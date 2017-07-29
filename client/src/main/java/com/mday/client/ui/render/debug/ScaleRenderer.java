@@ -1,14 +1,12 @@
-package com.mday.client.ui.render;
+package com.mday.client.ui.render.debug;
 
 import com.mday.client.ui.Surface;
 import com.mday.client.ui.SurfaceConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-
 import javax.annotation.Nonnull;
+import java.awt.*;
 
 /**
  * Responsible for drawing the current surface scale.

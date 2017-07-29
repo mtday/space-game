@@ -1,10 +1,10 @@
-package com.mday.client.event.type;
-
-import static com.mday.client.event.EventType.MOUSE_WHEEL;
+package com.mday.client.event.type.input;
 
 import com.mday.client.event.Event;
 
 import javax.annotation.Nonnull;
+
+import static com.mday.client.event.EventType.MOUSE_WHEEL;
 
 /**
  * An event representing a mouse wheel action.

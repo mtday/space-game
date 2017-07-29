@@ -1,9 +1,9 @@
-package com.mday.client.action;
+package com.mday.client.action.key;
 
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
-import com.mday.client.event.type.KeyEvent;
-import com.mday.client.event.type.QuitEvent;
+import com.mday.client.event.type.input.KeyEvent;
+import com.mday.client.event.type.game.QuitEvent;
 import com.mday.client.game.EventQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

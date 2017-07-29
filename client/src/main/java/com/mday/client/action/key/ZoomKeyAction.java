@@ -1,10 +1,10 @@
-package com.mday.client.action;
+package com.mday.client.action.key;
 
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
-import com.mday.client.event.type.KeyEvent;
-import com.mday.client.event.type.ZoomInEvent;
-import com.mday.client.event.type.ZoomOutEvent;
+import com.mday.client.event.type.input.KeyEvent;
+import com.mday.client.event.type.coordinate.ZoomInEvent;
+import com.mday.client.event.type.coordinate.ZoomOutEvent;
 import com.mday.client.game.EventQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

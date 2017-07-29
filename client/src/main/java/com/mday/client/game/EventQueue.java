@@ -1,7 +1,7 @@
 package com.mday.client.game;
 
 import com.mday.client.event.Event;
-import com.mday.client.event.type.StartEvent;
+import com.mday.client.event.type.game.StartEvent;
 
 import java.util.concurrent.LinkedBlockingQueue;
 

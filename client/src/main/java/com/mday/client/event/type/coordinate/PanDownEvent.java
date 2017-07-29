@@ -1,4 +1,4 @@
-package com.mday.client.event.type;
+package com.mday.client.event.type.coordinate;
 
 import com.mday.client.event.Event;
 

@@ -1,19 +1,17 @@
-package com.mday.client.ui.render;
+package com.mday.client.ui.render.debug;
 
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
-import com.mday.client.event.type.MouseEvent;
+import com.mday.client.event.type.input.MouseEvent;
 import com.mday.client.ui.Surface;
 import com.mday.client.ui.SurfaceConsumer;
 import com.mday.common.model.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.Point2D;
-
 import javax.annotation.Nonnull;
+import java.awt.*;
+import java.awt.geom.Point2D;
 
 /**
  * Responsible for drawing the current mouse coordinate location.

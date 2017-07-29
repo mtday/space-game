@@ -1,8 +1,8 @@
-package com.mday.client.event.type;
-
-import static com.mday.client.event.EventType.START;
+package com.mday.client.event.type.game;
 
 import com.mday.client.event.Event;
+
+import static com.mday.client.event.EventType.START;
 
 /**
  * Represents the game is starting.
