@@ -14,10 +14,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.awt.geom.Point2D;
 
-import static java.awt.event.MouseEvent.BUTTON1;
-import static java.awt.event.MouseEvent.MOUSE_DRAGGED;
-import static java.awt.event.MouseEvent.MOUSE_PRESSED;
-import static java.awt.event.MouseEvent.MOUSE_RELEASED;
+import static java.awt.event.MouseEvent.*;
 
 /**
  * Responsible for drawing the mouse selection rectangle.
@@ -79,6 +76,9 @@ public class MouseSelectionAction implements EventConsumer {
 
                     wasDrag = false;
                 }
+            } else if (mouseEvent.getMouseEvent().getButton() == BUTTON3) {
+                // Right mouse button results in a deselection.
+                eventQueue.add(new UnitDeselectEvent());
             }
         }
     }
