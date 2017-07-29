@@ -1,7 +1,8 @@
-package com.mday.client.ui.render.unit;
+package com.mday.client.ui.render.unit.ship;
 
 import com.mday.client.ui.Surface;
-import com.mday.common.model.Unit;
+import com.mday.client.ui.render.unit.AbstractShipRenderer;
+import com.mday.common.model.Ship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,19 +14,19 @@ import java.awt.geom.Point2D;
 import javax.annotation.Nonnull;
 
 /**
- * Responsible for rendering the recon drone unit type.
+ * Responsible for rendering the recon drone.
  */
-public class ReconDroneRenderer extends AbstractUnitRenderer {
+public class ReconDroneRenderer extends AbstractShipRenderer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReconDroneRenderer.class);
 
     @Override
-    public void accept(@Nonnull final Unit unit, @Nonnull final Surface surface) {
-        super.accept(unit, surface);
+    public void accept(@Nonnull final Ship ship, @Nonnull final Surface surface) {
+        super.accept(ship, surface);
 
-        final double diameter = unit.getType().getSize() * surface.getCoordinateSystem().getScale();
+        final double diameter = ship.getShipType().getSize() * surface.getCoordinateSystem().getScale();
         final double radius = diameter / 2;
 
-        final Point2D.Double center = surface.getCoordinateSystem().toPoint(unit.getLocation());
+        final Point2D.Double center = surface.getCoordinateSystem().toPoint(ship.getLocation());
 
         final Graphics2D graphics = surface.getDrawGraphics();
 

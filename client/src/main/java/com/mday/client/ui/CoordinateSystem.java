@@ -254,7 +254,7 @@ public class CoordinateSystem implements SurfaceConsumer, EventConsumer {
     @Nonnull
     public Location toLocation(@Nonnull final Point2D.Double point) {
         return new Location(
-                point.getX() - (width / 2.0) / scale + center.getX(),
-                point.getY() - (height / 2.0) / scale + center.getY());
+                (point.getX() - (width / 2.0)) / scale + center.getX(),
+                (point.getY() - (height / 2.0)) / scale + center.getY());
     }
 }

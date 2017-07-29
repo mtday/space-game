@@ -65,9 +65,9 @@ public class Client {
         runner.addEventConsumer(mouseSelectionRenderer);
         runner.addEventConsumer(new MouseSelectionAction(eventQueue));
 
-        eventQueue.add(new UnitAddEvent(new ReconDroneUnit("recon", "me", new Location(-100, -50))));
-        eventQueue.add(new UnitAddEvent(new ShipyardUnit("shipyard", "me", new Location(0, 0))));
-        eventQueue.add(new UnitAddEvent(new ResearchVesselUnit("research", "me", new Location(100, 50))));
+        eventQueue.add(new UnitAddEvent(new ReconDroneUnit("recon", new Location(-100, -50), "me")));
+        eventQueue.add(new UnitAddEvent(new ShipyardUnit("shipyard", new Location(0, 0), "me")));
+        eventQueue.add(new UnitAddEvent(new ResearchVesselUnit("research", new Location(100, 50), "me")));
     }
 
     /**

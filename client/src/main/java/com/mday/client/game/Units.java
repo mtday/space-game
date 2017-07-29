@@ -36,8 +36,6 @@ public class Units implements EventConsumer {
     private final ConcurrentHashMap<String, Unit> byId = new ConcurrentHashMap<>();
     @Nonnull
     private final ConcurrentHashMap<UnitType, ConcurrentSkipListSet<Unit>> byType = new ConcurrentHashMap<>();
-    @Nonnull
-    private final ConcurrentHashMap<String, ConcurrentSkipListSet<Unit>> byOwner = new ConcurrentHashMap<>();
 
     /**
      * Create an instance of this class.
@@ -80,37 +78,22 @@ public class Units implements EventConsumer {
         return Optional.<Set<Unit>>ofNullable(byType.get(type)).orElseGet(Collections::emptySet);
     }
 
-    /**
-     * Retrieve all the units owned by a specific user.
-     *
-     * @param owner the id of the owner for which units will be retrieved
-     * @return the requested units
-     */
-    @Nonnull
-    public Set<Unit> getByOwner(@Nonnull final String owner) {
-        return Optional.<Set<Unit>>ofNullable(byOwner.get(owner)).orElseGet(Collections::emptySet);
-    }
-
     @Override
     public void accept(@Nonnull final Event event) {
         if (event instanceof UnitAddEvent) {
             final UnitAddEvent unitAddEvent = (UnitAddEvent) event;
             byId.put(unitAddEvent.getUnit().getId(), unitAddEvent.getUnit());
-            byType.computeIfAbsent(unitAddEvent.getUnit().getType(), ignored -> new ConcurrentSkipListSet<>())
-                    .add(unitAddEvent.getUnit());
-            byOwner.computeIfAbsent(unitAddEvent.getUnit().getOwner(), ignored -> new ConcurrentSkipListSet<>())
+            byType.computeIfAbsent(unitAddEvent.getUnit().getUnitType(), ignored -> new ConcurrentSkipListSet<>())
                     .add(unitAddEvent.getUnit());
         } else if (event instanceof UnitRemoveEvent) {
             final UnitRemoveEvent unitRemoveEvent = (UnitRemoveEvent) event;
             byId.remove(unitRemoveEvent.getUnit().getId());
-            Optional.ofNullable(byType.get(unitRemoveEvent.getUnit().getType()))
-                    .ifPresent(set -> set.remove(unitRemoveEvent.getUnit()));
-            Optional.ofNullable(byOwner.get(unitRemoveEvent.getUnit().getOwner()))
+            Optional.ofNullable(byType.get(unitRemoveEvent.getUnit().getUnitType()))
                     .ifPresent(set -> set.remove(unitRemoveEvent.getUnit()));
         } else if (event instanceof UnitSelectEvent) {
-            final UnitSelectEvent mouseSelectionEvent = (UnitSelectEvent) event;
-            final Location topLeft = coordinateSystem.toLocation(mouseSelectionEvent.getTopLeft());
-            final Location botRight = coordinateSystem.toLocation(mouseSelectionEvent.getBottomRight());
+            final UnitSelectEvent unitSelectionEvent = (UnitSelectEvent) event;
+            final Location topLeft = coordinateSystem.toLocation(unitSelectionEvent.getTopLeft());
+            final Location botRight = coordinateSystem.toLocation(unitSelectionEvent.getBottomRight());
             getAll().forEach(unit -> unit.setSelected(unit.getLocation().isInside(topLeft, botRight)));
         } else if (event instanceof UnitDeselectEvent) {
             getAll().forEach(unit -> unit.setSelected(false));

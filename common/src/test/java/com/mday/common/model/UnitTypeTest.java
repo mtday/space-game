@@ -1,6 +1,6 @@
 package com.mday.common.model;
 
-import static com.mday.common.model.UnitType.SHIPYARD;
+import static com.mday.common.model.UnitType.SHIP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -16,6 +16,6 @@ public class UnitTypeTest {
     @Test
     public void test() {
         assertTrue(UnitType.values().length > 0);
-        assertEquals(SHIPYARD, UnitType.valueOf(SHIPYARD.name()));
+        assertEquals(SHIP, UnitType.valueOf(SHIP.name()));
     }
 }

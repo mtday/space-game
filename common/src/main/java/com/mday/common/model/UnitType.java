@@ -5,37 +5,17 @@ package com.mday.common.model;
  */
 public enum UnitType {
     /**
-     * A ship yard is where additional units can be created.
+     * A ship.
      */
-    SHIPYARD(22.0),
+    SHIP,
 
     /**
-     * A recon drone is used to perform scouting reconnaissance.
+     * A planet.
      */
-    RECON_DRONE(8.0),
+    PLANET,
 
     /**
-     * A research vessel is responsible for technology research.
+     * A star.
      */
-    RESEARCH_VESSEL(13.0);
-
-    private final double size;
-
-    /**
-     * Create a unit type.
-     *
-     * @param size the size of the unit
-     */
-    UnitType(final double size) {
-        this.size = size;
-    }
-
-    /**
-     * Retrieve the size of the unit.
-     *
-     * @return the size of the unit
-     */
-    public double getSize() {
-        return size;
-    }
+    STAR
 }
