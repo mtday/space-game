@@ -50,6 +50,11 @@ public enum EventType {
     ZOOM_OUT,
 
     /**
+     * Pan the display based on coordinate deltas.
+     */
+    PAN,
+
+    /**
      * Pan the display surface up.
      */
     PAN_UP,

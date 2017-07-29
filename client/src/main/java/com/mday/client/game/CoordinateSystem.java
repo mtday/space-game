@@ -11,9 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.geom.Point2D;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents the display surface on which the game graphics will be drawn.
@@ -24,6 +22,8 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
     private int width;
     private int height;
 
+    private static final double MIN_SCALE = 0.02;
+    private static final double MAX_SCALE = 5.0;
     private static final int SCALE_FRAMES = 12; // The number of frames over which a zoom will be implemented.
     private double scale = 1.0;
     private double scaleGoal = scale;
@@ -80,6 +80,9 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
             zoomIn(((ZoomInEvent) event).getPoint());
         } else if (event instanceof ZoomOutEvent) {
             zoomOut(((ZoomOutEvent) event).getPoint());
+        } else if (event instanceof PanEvent) {
+            final PanEvent panEvent = (PanEvent) event;
+            pan(panEvent.getDeltaX(), panEvent.getDeltaY());
         } else if (event instanceof PanUpEvent) {
             panUp();
         } else if (event instanceof PanDownEvent) {
@@ -97,6 +100,14 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
             final Location oldScalePointLocation = (scalePoint == null) ? null : toLocation(scalePoint);
 
             scale += scaleIncrement;
+
+            if (scale > MAX_SCALE) {
+                scale = MAX_SCALE;
+                scaleGoal = MAX_SCALE;
+            } else if (scale < MIN_SCALE) {
+                scale = MIN_SCALE;
+                scaleGoal = MIN_SCALE;
+            }
 
             // Update the center location in the coordinate system based on the scaling focus point, if available.
             if (scalePoint != null) {
@@ -150,6 +161,18 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
         scaleGoal *= 2.0 / 3.0;
         scaleIncrement = (scaleGoal - scale) / SCALE_FRAMES;
         scalePoint = point;
+    }
+
+    /**
+     * Pan the display based on the specified offsets.
+     *
+     * @param deltaX the amount to pan the display in the X coordinate
+     * @param deltaY the amount to pan the display in the Y coordinate
+     */
+    public void pan(final double deltaX, final double deltaY) {
+        final List<Location> deltas = new ArrayList<>(1);
+        deltas.add(new Location(deltaX / scale, deltaY / scale));
+        panDeltas.add(deltas);
     }
 
     /**

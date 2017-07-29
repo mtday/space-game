@@ -2,7 +2,7 @@ package com.mday.client;
 
 import com.mday.client.action.key.ArrowKeyAction;
 import com.mday.client.action.key.EscapeKeyAction;
-import com.mday.client.action.mouse.MouseSelectionAction;
+import com.mday.client.action.mouse.MouseAction;
 import com.mday.client.action.key.ZoomKeyAction;
 import com.mday.client.action.mouse.MouseZoomAction;
 import com.mday.client.event.type.unit.UnitAddEvent;
@@ -65,7 +65,7 @@ public class Client {
         runner.addEventConsumer(new ArrowKeyAction(eventQueue));
         runner.addEventConsumer(mousePositionRenderer);
         runner.addEventConsumer(mouseSelectionRenderer);
-        runner.addEventConsumer(new MouseSelectionAction(eventQueue, units));
+        runner.addEventConsumer(new MouseAction(eventQueue, units));
         runner.addEventConsumer(new MouseZoomAction(eventQueue));
 
         eventQueue.add(new UnitAddEvent(new ReconDroneUnit("recon", new Location(-100, -50), "me")));
