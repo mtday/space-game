@@ -8,6 +8,7 @@ import static java.awt.RenderingHints.VALUE_RENDER_QUALITY;
 import static java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_GASP;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
+import com.mday.client.game.CoordinateSystem;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -4,13 +4,14 @@ import com.mday.client.action.key.ArrowKeyAction;
 import com.mday.client.action.key.EscapeKeyAction;
 import com.mday.client.action.mouse.MouseSelectionAction;
 import com.mday.client.action.key.ZoomKeyAction;
+import com.mday.client.action.mouse.MouseZoomAction;
 import com.mday.client.event.type.unit.UnitAddEvent;
 import com.mday.client.game.EventQueue;
 import com.mday.client.game.Runner;
 import com.mday.client.game.UnitMover;
 import com.mday.client.game.Units;
 import com.mday.client.io.ServerConnector;
-import com.mday.client.ui.CoordinateSystem;
+import com.mday.client.game.CoordinateSystem;
 import com.mday.client.ui.Display;
 import com.mday.client.ui.render.*;
 import com.mday.client.ui.render.debug.GridRenderer;
@@ -65,6 +66,7 @@ public class Client {
         runner.addEventConsumer(mousePositionRenderer);
         runner.addEventConsumer(mouseSelectionRenderer);
         runner.addEventConsumer(new MouseSelectionAction(eventQueue, units));
+        runner.addEventConsumer(new MouseZoomAction(eventQueue));
 
         eventQueue.add(new UnitAddEvent(new ReconDroneUnit("recon", new Location(-100, -50), "me")));
         eventQueue.add(new UnitAddEvent(new ShipyardUnit("shipyard", new Location(0, 0), "me")));

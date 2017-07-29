@@ -17,7 +17,7 @@ import java.awt.geom.Point2D;
 import static java.awt.event.MouseEvent.*;
 
 /**
- * Responsible for drawing the mouse selection rectangle.
+ * Responsible for performing selection and deselection actions based on mouse activity.
  */
 public class MouseSelectionAction implements EventConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(MouseSelectionAction.class);
@@ -35,7 +35,7 @@ public class MouseSelectionAction implements EventConsumer {
     /**
      * Create an instance of this class.
      *
-     * @param eventQueue the event queue onto which mouse selection events will be published
+     * @param eventQueue the event queue onto which unit selection events will be published
      * @param units      the manager tracking the available units
      */
     public MouseSelectionAction(@Nonnull final EventQueue eventQueue, @Nonnull final Units units) {

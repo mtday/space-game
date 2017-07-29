@@ -3,7 +3,6 @@ package com.mday.client.game;
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
 import com.mday.client.event.type.unit.*;
-import com.mday.client.ui.CoordinateSystem;
 import com.mday.common.model.Location;
 import com.mday.common.model.Unit;
 import com.mday.common.model.UnitType;

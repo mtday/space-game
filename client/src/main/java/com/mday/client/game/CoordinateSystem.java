@@ -1,4 +1,4 @@
-package com.mday.client.ui;
+package com.mday.client.game;
 
 import com.mday.client.event.ClockTickObserver;
 import com.mday.client.event.Event;
@@ -28,6 +28,8 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
     private double scale = 1.0;
     private double scaleGoal = scale;
     private double scaleIncrement = 0;
+    @Nullable
+    private Point2D.Double scalePoint = null;
 
     private static final int PAN_FRAMES = 12; // The number of frames over which a pan will be implemented.
     private static final double PAN_PERCENT = 0.10; // When panning, we shift the display surface by 10%.
@@ -92,7 +94,14 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
     @Override
     public void tick() {
         if (Math.abs(scale - scaleGoal) > Math.abs(scaleIncrement / 2)) {
+            final Location oldScalePointLocation = (scalePoint == null) ? null : toLocation(scalePoint);
+
             scale += scaleIncrement;
+
+            // Update the center location in the coordinate system based on the scaling focus point, if available.
+            if (scalePoint != null) {
+                center = center.add(oldScalePointLocation.subtract(toLocation(scalePoint)));
+            }
         }
 
         final Iterator<List<Location>> panDeltaIter = panDeltas.iterator();
@@ -126,8 +135,7 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
         // Increase scale by 33%
         scaleGoal *= 3.0 / 2.0;
         scaleIncrement = (scaleGoal - scale) / SCALE_FRAMES;
-
-        // TODO: update center location based on point
+        scalePoint = point;
     }
 
     /**
@@ -141,8 +149,7 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
         // Decrease scale by 33%
         scaleGoal *= 2.0 / 3.0;
         scaleIncrement = (scaleGoal - scale) / SCALE_FRAMES;
-
-        // TODO: update center location based on point
+        scalePoint = point;
     }
 
     /**
@@ -217,7 +224,7 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
     /**
      * Retrieve the top left location of the draw surface.
      *
-     * @return the top left location of the draw surface.
+     * @return the top left location of the draw surface
      */
     @Nonnull
     public Location getTopLeft() {
@@ -227,7 +234,7 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
     /**
      * Retrieve the top mid location of the draw surface.
      *
-     * @return the top mid location of the draw surface.
+     * @return the top mid location of the draw surface
      */
     @Nonnull
     public Location getTopMid() {
@@ -237,7 +244,7 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
     /**
      * Retrieve the top right location of the draw surface.
      *
-     * @return the top right location of the draw surface.
+     * @return the top right location of the draw surface
      */
     @Nonnull
     public Location getTopRight() {
@@ -247,7 +254,7 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
     /**
      * Retrieve the mid left location of the draw surface.
      *
-     * @return the mid left location of the draw surface.
+     * @return the mid left location of the draw surface
      */
     @Nonnull
     public Location getMidLeft() {
@@ -257,7 +264,7 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
     /**
      * Retrieve the mid right location of the draw surface.
      *
-     * @return the mid right location of the draw surface.
+     * @return the mid right location of the draw surface
      */
     @Nonnull
     public Location getMidRight() {
@@ -267,7 +274,7 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
     /**
      * Retrieve the bottom left location of the draw surface.
      *
-     * @return the bottom left location of the draw surface.
+     * @return the bottom left location of the draw surface
      */
     @Nonnull
     public Location getBottomLeft() {
@@ -277,7 +284,7 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
     /**
      * Retrieve the bottom mid location of the draw surface.
      *
-     * @return the bottom mid location of the draw surface.
+     * @return the bottom mid location of the draw surface
      */
     @Nonnull
     public Location getBottomMid() {
@@ -287,7 +294,7 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
     /**
      * Retrieve the bottom right location of the draw surface.
      *
-     * @return the bottom right location of the draw surface.
+     * @return the bottom right location of the draw surface
      */
     @Nonnull
     public Location getBottomRight() {
@@ -298,7 +305,7 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
      * Determine whether the current view area on the draw surface contains the specified location.
      *
      * @param location the location to check for existence in the current view area of the draw surface
-     * @return whether the current view area on the draw surface contains the specified location.
+     * @return whether the current view area on the draw surface contains the specified location
      */
     public boolean contains(@Nonnull final Location location) {
         final Location topLeft = getTopLeft();
