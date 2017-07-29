@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 
+import static java.awt.Event.ESCAPE;
+
 /**
  * Responsible for handling the escape key.
  */
@@ -32,7 +34,7 @@ public class EscapeKeyAction implements EventConsumer {
     public void accept(@Nonnull final Event event) {
         if (event instanceof KeyEvent) {
             final KeyEvent keyEvent = (KeyEvent) event;
-            if (keyEvent.getKeyEvent().getKeyCode() == java.awt.Event.ESCAPE) {
+            if (keyEvent.getKeyEvent().getKeyCode() == ESCAPE) {
                 eventQueue.add(new QuitEvent());
             }
         }

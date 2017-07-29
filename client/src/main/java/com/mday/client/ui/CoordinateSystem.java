@@ -2,16 +2,17 @@ package com.mday.client.ui;
 
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
-import com.mday.client.event.type.ZoomInEvent;
-import com.mday.client.event.type.ZoomOutEvent;
+import com.mday.client.event.type.*;
 import com.mday.common.model.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.geom.Point2D;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.awt.geom.Point2D;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Represents the display surface on which the game graphics will be drawn.
@@ -22,9 +23,14 @@ public class CoordinateSystem implements SurfaceConsumer, EventConsumer {
     private int width;
     private int height;
 
+    private static final int SCALE_FRAMES = 12; // The number of frames over which a zoom will be implemented.
     private double scale = 1.0;
     private double scaleGoal = scale;
     private double scaleIncrement = 0;
+
+    private static final int PAN_FRAMES = 12; // The number of frames over which a pan will be implemented.
+    private static final double PAN_PERCENT = 0.10; // When panning, we shift the display surface by 10%.
+    private final List<List<Location>> panDeltas = new LinkedList<>();
 
     @Nonnull
     private Location center = new Location();
@@ -71,6 +77,14 @@ public class CoordinateSystem implements SurfaceConsumer, EventConsumer {
             zoomIn(((ZoomInEvent) event).getPoint());
         } else if (event instanceof ZoomOutEvent) {
             zoomOut(((ZoomOutEvent) event).getPoint());
+        } else if (event instanceof PanUpEvent) {
+            panUp();
+        } else if (event instanceof PanDownEvent) {
+            panDown();
+        } else if (event instanceof PanLeftEvent) {
+            panLeft();
+        } else if (event instanceof PanRightEvent) {
+            panRight();
         }
     }
 
@@ -78,6 +92,16 @@ public class CoordinateSystem implements SurfaceConsumer, EventConsumer {
     public void accept(@Nonnull final Surface surface) {
         if (Math.abs(scale - scaleGoal) > Math.abs(scaleIncrement / 2)) {
             scale += scaleIncrement;
+        }
+
+        final Iterator<List<Location>> panDeltaIter = panDeltas.iterator();
+        while (panDeltaIter.hasNext()) {
+            final List<Location> deltas = panDeltaIter.next();
+            if (deltas.isEmpty()) {
+                panDeltaIter.remove();
+            } else {
+                center = center.add(deltas.remove(0));
+            }
         }
     }
 
@@ -100,7 +124,7 @@ public class CoordinateSystem implements SurfaceConsumer, EventConsumer {
         // Zooming in means we want more pixels per location point.
         // Increase scale by 33%
         scaleGoal *= 3.0 / 2.0;
-        scaleIncrement = (scaleGoal - scale) / 12;
+        scaleIncrement = (scaleGoal - scale) / SCALE_FRAMES;
 
         // TODO: update center location based on point
     }
@@ -115,9 +139,59 @@ public class CoordinateSystem implements SurfaceConsumer, EventConsumer {
         // Zooming out means we want fewer pixels per location point.
         // Decrease scale by 33%
         scaleGoal *= 2.0 / 3.0;
-        scaleIncrement = (scaleGoal - scale) / 12;
+        scaleIncrement = (scaleGoal - scale) / SCALE_FRAMES;
 
         // TODO: update center location based on point
+    }
+
+    /**
+     * Pan the display upward.
+     */
+    public void panUp() {
+        panVertical(-(center.getY() - getTopMid().getY() * 2) * PAN_PERCENT);
+    }
+
+    /**
+     * Pan the display downward.
+     */
+    public void panDown() {
+        panVertical((center.getY() - getTopMid().getY() * 2) * PAN_PERCENT);
+    }
+
+    /**
+     * Pan the display leftward.
+     */
+    public void panLeft() {
+        panHorizontal(-(center.getX() - getMidLeft().getX() * 2) * PAN_PERCENT);
+    }
+
+    /**
+     * Pan the display rightward.
+     */
+    public void panRight() {
+        panHorizontal((center.getX() - getMidLeft().getX() * 2) * PAN_PERCENT);
+    }
+
+    private void panVertical(final double yDelta) {
+        final List<Location> deltas = new LinkedList<>();
+        double prevY = 0;
+        for (int i = 0; i <= PAN_FRAMES; i++) {
+            final double newY = yDelta * (1 - (Math.cos(i * Math.PI / PAN_FRAMES) + 1) / 2);
+            deltas.add(new Location(0, newY - prevY));
+            prevY = newY;
+        }
+        panDeltas.add(deltas);
+    }
+
+    private void panHorizontal(final double xDelta) {
+        final List<Location> deltas = new LinkedList<>();
+        double prevX = 0;
+        for (int i = 0; i <= PAN_FRAMES; i++) {
+            final double newX = xDelta * (1 - (Math.cos(i * Math.PI / PAN_FRAMES) + 1) / 2);
+            deltas.add(new Location(newX - prevX, 0));
+            prevX = newX;
+        }
+        panDeltas.add(deltas);
     }
 
     /**

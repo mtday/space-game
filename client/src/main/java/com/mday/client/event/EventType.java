@@ -45,6 +45,26 @@ public enum EventType {
     ZOOM_OUT,
 
     /**
+     * Pan the display surface up.
+     */
+    PAN_UP,
+
+    /**
+     * Pan the display surface down.
+     */
+    PAN_DOWN,
+
+    /**
+     * Pan the display surface left.
+     */
+    PAN_LEFT,
+
+    /**
+     * Pan the display surface right.
+     */
+    PAN_RIGHT,
+
+    /**
      * A key input event.
      */
     KEY,

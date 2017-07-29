@@ -1,10 +1,9 @@
 
 package com.mday.common.model;
 
-import java.util.Objects;
-
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 /**
  * Represents a location in coordinate space.
@@ -121,7 +120,7 @@ public class Location {
         }
 
         final Location location = (Location) other;
-        return x == location.x && y == location.y;
+        return Math.abs(x - location.x) < 0.00001 && Math.abs(y - location.y) < 0.00001;
     }
 
     @Override

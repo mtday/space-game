@@ -1,9 +1,9 @@
 package com.mday.client;
 
+import com.mday.client.action.ArrowKeyAction;
 import com.mday.client.action.EscapeKeyAction;
 import com.mday.client.action.MouseSelectionAction;
-import com.mday.client.action.ZoomInAction;
-import com.mday.client.action.ZoomOutAction;
+import com.mday.client.action.ZoomKeyAction;
 import com.mday.client.event.type.UnitAddEvent;
 import com.mday.client.game.EventQueue;
 import com.mday.client.game.Runner;
@@ -11,12 +11,7 @@ import com.mday.client.game.Units;
 import com.mday.client.io.ServerConnector;
 import com.mday.client.ui.CoordinateSystem;
 import com.mday.client.ui.Display;
-import com.mday.client.ui.render.BackgroundRenderer;
-import com.mday.client.ui.render.GridRenderer;
-import com.mday.client.ui.render.MousePositionRenderer;
-import com.mday.client.ui.render.MouseSelectionRenderer;
-import com.mday.client.ui.render.ScaleRenderer;
-import com.mday.client.ui.render.UnitRenderer;
+import com.mday.client.ui.render.*;
 import com.mday.common.model.Location;
 import com.mday.common.model.unit.ReconDroneUnit;
 import com.mday.common.model.unit.ResearchVesselUnit;
@@ -59,8 +54,8 @@ public class Client {
         runner.addEventConsumer(display);
         runner.addEventConsumer(units);
         runner.addEventConsumer(new EscapeKeyAction(eventQueue));
-        runner.addEventConsumer(new ZoomInAction(eventQueue));
-        runner.addEventConsumer(new ZoomOutAction(eventQueue));
+        runner.addEventConsumer(new ZoomKeyAction(eventQueue));
+        runner.addEventConsumer(new ArrowKeyAction(eventQueue));
         runner.addEventConsumer(mousePositionRenderer);
         runner.addEventConsumer(mouseSelectionRenderer);
         runner.addEventConsumer(new MouseSelectionAction(eventQueue));
