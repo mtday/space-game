@@ -28,8 +28,8 @@ public class GridRenderer implements SurfaceConsumer {
             final Graphics2D graphics = surface.getDrawGraphics();
             graphics.setColor(new Color(66, 84, 120));
 
-            final Location topLeft = surface.getTopLeft();
-            final Location botRight = surface.getBottomRight();
+            final Location topLeft = surface.getCoordinateSystem().getTopLeft();
+            final Location botRight = surface.getCoordinateSystem().getBottomRight();
 
             final Location first = new Location(topLeft.getX() - (topLeft.getX() % DELTA) - DELTA,
                     topLeft.getY() - (topLeft.getY() % DELTA) - DELTA);
@@ -38,13 +38,13 @@ public class GridRenderer implements SurfaceConsumer {
                     botRight.getY() + (botRight.getY() % DELTA));
 
             for (double x = first.getX(); x <= last.getX(); x += DELTA) {
-                final Point2D.Double start = surface.toPoint(new Location(x, first.getY()));
-                final Point2D.Double end = surface.toPoint(new Location(x, last.getY()));
+                final Point2D.Double start = surface.getCoordinateSystem().toPoint(new Location(x, first.getY()));
+                final Point2D.Double end = surface.getCoordinateSystem().toPoint(new Location(x, last.getY()));
                 graphics.draw(new Line2D.Double(start, end));
             }
             for (double y = first.getY(); y <= last.getX(); y += DELTA) {
-                final Point2D.Double start = surface.toPoint(new Location(first.getX(), y));
-                final Point2D.Double end = surface.toPoint(new Location(last.getX(), y));
+                final Point2D.Double start = surface.getCoordinateSystem().toPoint(new Location(first.getX(), y));
+                final Point2D.Double end = surface.getCoordinateSystem().toPoint(new Location(last.getX(), y));
                 graphics.draw(new Line2D.Double(start, end));
             }
         }

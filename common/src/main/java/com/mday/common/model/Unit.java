@@ -19,6 +19,7 @@ public class Unit implements Comparable<Unit> {
     @Nonnull
     private Location location;
     private int direction = 0;
+    private boolean selected = false;
 
     /**
      * Create a new unit instance.
@@ -103,6 +104,24 @@ public class Unit implements Comparable<Unit> {
         this.direction = direction;
     }
 
+    /**
+     * Whether this unit is currently selected.
+     *
+     * @return this unit is currently selected
+     */
+    public boolean isSelected() {
+        return selected;
+    }
+
+    /**
+     * Set whether this unit is currently selected.
+     *
+     * @param selected the new value indicating whether this unit is currently selected
+     */
+    public void setSelected(final boolean selected) {
+        this.selected = selected;
+    }
+
     @Override
     public int compareTo(@Nullable final Unit unit) {
         if (unit == null) {
@@ -125,7 +144,7 @@ public class Unit implements Comparable<Unit> {
     @Override
     @Nonnull
     public String toString() {
-        return String.format("Unit[type=%s, id=%s, owner=%s, location=%s, direction=%d]",
-                getType().name(), getId(), getOwner(), getLocation(), getDirection());
+        return String.format("Unit[type=%s, id=%s, owner=%s, location=%s, direction=%d, selected=%b]",
+                getType().name(), getId(), getOwner(), getLocation(), getDirection(), isSelected());
     }
 }

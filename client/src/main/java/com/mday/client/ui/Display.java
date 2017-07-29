@@ -3,10 +3,7 @@ package com.mday.client.ui;
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
 import com.mday.client.event.EventType;
-import com.mday.client.event.type.ZoomInEvent;
-import com.mday.client.event.type.ZoomOutEvent;
 import com.mday.client.game.EventQueue;
-import com.mday.common.model.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +38,9 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
     private static final Dimension FRAME_DIMENSION = new Dimension(640, 520);
 
     @Nonnull
-    private final EventQueue eventQueue;
+    private final transient EventQueue eventQueue;
+    @Nonnull
+    private final transient CoordinateSystem coordinateSystem;
     @Nonnull
     private final transient GraphicsDevice graphicsDevice;
 
@@ -53,9 +52,11 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
      * Create an instance of the game display.
      *
      * @param eventQueue the event queue to which key and mouse events will be sent
+     * @param coordinateSystem the coordinate system managing locations on the display surface
      */
-    public Display(@Nonnull final EventQueue eventQueue) {
+    public Display(@Nonnull final EventQueue eventQueue, @Nonnull final CoordinateSystem coordinateSystem) {
         this.eventQueue = eventQueue;
+        this.coordinateSystem = coordinateSystem;
         this.graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
     }
 
@@ -73,17 +74,18 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
         final Surface surface;
         if (FULL_SCREEN) {
             final GraphicsConfiguration graphicsConfiguration = graphicsDevice.getDefaultConfiguration();
-            final int width = (int) graphicsConfiguration.getBounds().getWidth();
-            final int height = (int) graphicsConfiguration.getBounds().getHeight();
-            surface = new Surface(width, height, new Location());
+            coordinateSystem.setWidth((int) graphicsConfiguration.getBounds().getWidth());
+            coordinateSystem.setHeight((int) graphicsConfiguration.getBounds().getHeight());
+            surface = new Surface(coordinateSystem);
         } else {
-            surface = new Surface((int) FRAME_DIMENSION.getWidth(), (int) FRAME_DIMENSION.getHeight(), new Location());
+            coordinateSystem.setWidth((int) FRAME_DIMENSION.getWidth());
+            coordinateSystem.setHeight((int) FRAME_DIMENSION.getHeight());
+            surface = new Surface(coordinateSystem);
         }
         surface.addKeyListener(this);
         surface.addMouseListener(this);
         surface.addMouseMotionListener(this);
         surface.addMouseWheelListener(this);
-        addSurfaceConsumer(surface);
         return surface;
     }
 
@@ -135,10 +137,6 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
             showWindow();
         } else if (event.getType() == EventType.QUIT) {
             hideWindow();
-        } else if (event instanceof ZoomInEvent) {
-            surface.zoomIn(((ZoomInEvent) event).getPoint());
-        } else if (event instanceof ZoomOutEvent) {
-            surface.zoomOut(((ZoomOutEvent) event).getPoint());
         }
     }
 

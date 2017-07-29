@@ -25,6 +25,16 @@ public enum EventType {
     UNIT_REMOVE,
 
     /**
+     * Select units based on a rectangular region of the screen.
+     */
+    UNIT_SELECT,
+
+    /**
+     * Deselect units.
+     */
+    UNIT_DESELECT,
+
+    /**
      * Zoom in on the display surface.
      */
     ZOOM_IN,

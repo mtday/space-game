@@ -21,6 +21,7 @@ public class ScaleRenderer implements SurfaceConsumer {
         final Graphics2D graphics = surface.getDrawGraphics();
         graphics.setColor(new Color(200, 200, 200));
 
-        graphics.drawString(String.format("Scale: %.2f", surface.getScale()), 10, surface.getHeight() - 10);
+        final String scale = String.format("Scale: %.2f", surface.getCoordinateSystem().getScale());
+        graphics.drawString(scale, 10, surface.getHeight() - 10);
     }
 }

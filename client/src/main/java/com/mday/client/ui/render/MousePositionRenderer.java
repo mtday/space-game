@@ -30,7 +30,7 @@ public class MousePositionRenderer implements SurfaceConsumer, EventConsumer {
         graphics.setColor(new Color(200, 200, 200));
 
         final Point2D.Double point = new Point2D.Double(x, y);
-        final Location location = surface.toLocation(point);
+        final Location location = surface.getCoordinateSystem().toLocation(point);
 
         graphics.drawString(String.format("PX: %.2f", point.getX()), 10, 20);
         graphics.drawString(String.format("PY: %.2f", point.getY()), 10, 40);

@@ -9,22 +9,23 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
-import java.util.function.BiConsumer;
 
 import javax.annotation.Nonnull;
 
 /**
  * Responsible for rendering the shipyard unit type.
  */
-public class ShipyardRenderer implements BiConsumer<Unit, Surface> {
+public class ShipyardRenderer extends AbstractUnitRenderer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShipyardRenderer.class);
 
     @Override
     public void accept(@Nonnull final Unit unit, @Nonnull final Surface surface) {
-        final double diameter = unit.getType().getSize() * surface.getScale();
+        super.accept(unit, surface);
+
+        final double diameter = unit.getType().getSize() * surface.getCoordinateSystem().getScale();
         final double radius = diameter / 2;
 
-        final Point2D.Double center = surface.toPoint(unit.getLocation());
+        final Point2D.Double center = surface.getCoordinateSystem().toPoint(unit.getLocation());
 
         final Graphics2D graphics = surface.getDrawGraphics();
 

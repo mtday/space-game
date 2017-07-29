@@ -76,7 +76,7 @@ public class UnitTest {
      */
     @Test
     public void testToString() {
-        assertEquals("Unit[type=SHIPYARD, id=id, owner=owner, location=Location[x=1.00, y=2.00], direction=0]",
-                new Unit(SHIPYARD, "id", "owner", new Location(1, 2)).toString());
+        assertEquals("Unit[type=SHIPYARD, id=id, owner=owner, location=Location[x=1.00, y=2.00], "
+                + "direction=0, selected=false]", new Unit(SHIPYARD, "id", "owner", new Location(1, 2)).toString());
     }
 }

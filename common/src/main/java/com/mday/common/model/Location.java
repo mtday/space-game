@@ -102,6 +102,18 @@ public class Location {
         return new Location(getX() - x, getY() - y);
     }
 
+    /**
+     * Determine if this location is contained within the provided bounding box.
+     *
+     * @param topLeft the top-left location of the bounding box
+     * @param bottomRight the bottom-right location of the bounding box
+     * @return whether this location is inside the bounding box
+     */
+    public boolean isInside(@Nonnull final Location topLeft, @Nonnull final Location bottomRight) {
+        return topLeft.getX() <= getX() && topLeft.getY() <= getY()
+                && bottomRight.getX() >= getX() && bottomRight.getY() >= getY();
+    }
+
     @Override
     public boolean equals(@CheckForNull final Object other) {
         if (!(other instanceof Location)) {

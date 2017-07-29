@@ -64,7 +64,6 @@ public class ServerConnector implements EventConsumer {
     @Override
     public void accept(@Nonnull final Event event) {
         if (event.getType() == EventType.QUIT) {
-            LOGGER.info("Received quit event");
             serverGroup.shutdownGracefully();
         }
     }
