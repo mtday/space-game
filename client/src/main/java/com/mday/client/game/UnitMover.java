@@ -27,20 +27,58 @@ public class UnitMover implements ClockTickObserver {
         moving.forEach(this::move);
     }
 
+    private boolean updateUnitDirection(@Nonnull final Unit unit, @Nonnull final Movement movement) {
+        final Location direction = movement.destination.subtract(unit.getLocation()).getNormalized();
+        final double radians = (2.5 * Math.PI + Math.atan2(direction.getY(), direction.getX())) % (Math.PI * 2);
+        double deltaRadians = ((2.0 * Math.PI + unit.getDirection()) % (Math.PI * 2)) - radians;
+
+        if (Math.abs(deltaRadians) > Math.PI && deltaRadians < 0) {
+            deltaRadians += 2 * Math.PI;
+        }
+
+        if (Math.abs(deltaRadians) > 20 * Math.PI / 180) {
+
+            if (deltaRadians < 0) {
+                unit.setDirection(unit.getDirection() + movement.traverseSpeed);
+            } else {
+                unit.setDirection(unit.getDirection() - movement.traverseSpeed);
+            }
+
+            // The unit needs to traverse towards the correct direction more before it can move.
+            return false;
+        } else {
+            if (Math.abs(deltaRadians) < movement.traverseSpeed) {
+                unit.setDirection(radians % (Math.PI * 2));
+            } else if (deltaRadians < 0) {
+                unit.setDirection(unit.getDirection() + movement.traverseSpeed);
+            } else {
+                unit.setDirection(unit.getDirection() - movement.traverseSpeed);
+            }
+
+            return true;
+        }
+    }
+
+    private void updateUnitLocation(@Nonnull final Unit unit, @Nonnull final Movement movement) {
+        final double distance = unit.getLocation().getDistanceTo(movement.destination);
+        final Location direction = movement.destination.subtract(unit.getLocation()).getNormalized();
+        final Location scaledDirection = direction.multiply(movement.movementSpeed).multiply(MOVEMENT_FACTOR);
+        final Location updatedUnitLocation = unit.getLocation().add(scaledDirection);
+        final double updatedDistance = unit.getLocation().getDistanceTo(updatedUnitLocation);
+        if (updatedDistance > distance) {
+            unit.setLocation(movement.destination);
+            moving.remove(unit);
+        } else {
+            unit.setLocation(updatedUnitLocation);
+        }
+    }
+
     private void move(@Nonnull final Unit unit, @Nonnull final Movement movement) {
         if (unit.getLocation().equals(movement.destination)) {
             moving.remove(unit);
         } else {
-            final double distance = unit.getLocation().getDistanceTo(movement.destination);
-            final Location direction = movement.destination.subtract(unit.getLocation()).getNormalized();
-            final Location scaledDirection = direction.multiply(movement.speed).multiply(MOVEMENT_FACTOR);
-            final Location updatedUnitLocation = unit.getLocation().add(scaledDirection);
-            final double updatedDistance = unit.getLocation().getDistanceTo(updatedUnitLocation);
-            if (updatedDistance > distance) {
-                unit.setLocation(movement.destination);
-                moving.remove(unit);
-            } else {
-                unit.setLocation(updatedUnitLocation);
+            if (updateUnitDirection(unit, movement)) {
+                updateUnitLocation(unit, movement);
             }
         }
     }
@@ -61,7 +99,7 @@ public class UnitMover implements ClockTickObserver {
             // The destination is inside the group of units, so move the units individually instead of as a group.
             for (final Unit unit : units) {
                 if (unit.isMovable()) {
-                    moving.put(unit, new Movement(destination, unit.getMovementSpeed()));
+                    moving.put(unit, new Movement(destination, unit.getMovementSpeed(), unit.getTraverseSpeed()));
                 }
             }
         } else {
@@ -79,12 +117,15 @@ public class UnitMover implements ClockTickObserver {
                 // Calculate the unit destination using the delta relative to the group destination.
                 final Location unitDestination = destination.subtract(delta);
 
-                // Calculate the slowest speed of all units, since they are going to stay in formation.
-                final double speed = units.stream().mapToDouble(Unit::getMovementSpeed).min().orElse(0);
+                // Calculate the slowest movement speed of all units, since they are going to stay in formation.
+                final double movementSpeed = units.stream().mapToDouble(Unit::getMovementSpeed).min().orElse(0);
+
+                // Calculate the slowest traverse speed of all units, since they are going to stay in formation.
+                final double traverseSpeed = units.stream().mapToDouble(Unit::getTraverseSpeed).min().orElse(0);
 
                 // Add the unit to the moving map using the relative location of the unit compared to the center of mass
                 // of all the units that need to move.
-                moving.put(unit, new Movement(unitDestination, speed));
+                moving.put(unit, new Movement(unitDestination, movementSpeed, traverseSpeed));
             }
         }
     }
@@ -102,18 +143,20 @@ public class UnitMover implements ClockTickObserver {
         final double maxX = units.stream().mapToDouble(unit -> unit.getLocation().getX()).max().orElse(0);
         final double maxY = units.stream().mapToDouble(unit -> unit.getLocation().getY()).max().orElse(0);
 
-        return minX <= destination.getX() && maxX >= destination.getX()
-                && minY <= destination.getY() && maxY >= destination.getY();
+        return minX <= destination.getX() && maxX >= destination.getX() && minY <= destination.getY()
+                && maxY >= destination.getY();
     }
 
     private static class Movement {
         @Nonnull
         private final Location destination;
-        private final double speed;
+        private final double movementSpeed;
+        private final double traverseSpeed;
 
-        Movement(@Nonnull final Location destination, final double speed) {
+        Movement(@Nonnull final Location destination, final double movementSpeed, final double traverseSpeed) {
             this.destination = destination;
-            this.speed = speed;
+            this.movementSpeed = movementSpeed;
+            this.traverseSpeed = traverseSpeed;
         }
     }
 }
