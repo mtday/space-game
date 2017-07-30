@@ -1,9 +1,10 @@
 
 package com.mday.common.model;
 
+import java.util.Objects;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import java.util.Objects;
 
 /**
  * Represents a location in coordinate space.
@@ -185,7 +186,7 @@ public class Location {
     @Override
     @Nonnull
     public String toString() {
-        return String.format("Location[x=%.2f, y=%.2f]", x, y);
+        return String.format("Location[x=%.5f, y=%.5f]", x, y);
     }
 }
 

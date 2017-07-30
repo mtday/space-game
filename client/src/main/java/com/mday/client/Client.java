@@ -25,8 +25,8 @@ import com.mday.common.model.Ship;
 import com.mday.common.model.ShipClass;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -35,17 +35,16 @@ import javax.annotation.Nullable;
  * Starts the game client.
  */
 public class Client {
-    private final ServerConnector serverConnector;
-    private final Runner runner;
+    private static final boolean FULL_SCREEN = true;
 
     /**
-     * Create an instance of the client.
+     * Run the client.
      *
-     * @throws IOException if there is a problem loading game resources
+     * @throws IOException if there is a problem loading game resources.
      */
-    public Client() throws IOException {
+    public static void run() throws IOException {
         final EventQueue eventQueue = new EventQueue();
-        serverConnector = new ServerConnector("localhost", 33445, eventQueue);
+        final ServerConnector serverConnector = new ServerConnector("localhost", 33445, eventQueue);
 
         final CoordinateSystem coordinateSystem = new CoordinateSystem();
         final UnitMover unitMover = new UnitMover();
@@ -54,7 +53,7 @@ public class Client {
         final MousePositionRenderer mousePositionRenderer = new MousePositionRenderer();
         final MouseSelectionRenderer mouseSelectionRenderer = new MouseSelectionRenderer();
 
-        final Display display = new Display(eventQueue, coordinateSystem);
+        final Display display = new Display(FULL_SCREEN, eventQueue, coordinateSystem);
         display.addSurfaceConsumer(new BackgroundRenderer());
         display.addSurfaceConsumer(new UnitRenderer(units));
         display.addSurfaceConsumer(new ScaleRenderer());
@@ -63,7 +62,7 @@ public class Client {
         display.addSurfaceConsumer(mousePositionRenderer);
         display.addSurfaceConsumer(mouseSelectionRenderer);
 
-        runner = new Runner(eventQueue, display);
+        final Runner runner = new Runner(eventQueue, display);
         runner.addClockTickObserver(coordinateSystem);
         runner.addClockTickObserver(unitMover);
         runner.addEventConsumer(coordinateSystem);
@@ -78,19 +77,10 @@ public class Client {
         runner.addEventConsumer(new MouseAction(eventQueue, units));
         runner.addEventConsumer(new MouseZoomAction(eventQueue));
 
-        int id = 0;
-        final List<Ship> ships = Arrays.asList(
-                new Ship(String.valueOf(++id), new Location(), ShipClass.SHIPYARD, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.RECON, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.FIGHTER, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.FRIGATE, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.DESTROYER, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.DREADNOUGHT, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.TRANSPORT, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.RESEARCH, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.REPAIR, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.COLLECTOR, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.SHIELD_GENERATOR, "me"));
+        final List<Ship> ships = new LinkedList<>();
+        for (final ShipClass shipClass : ShipClass.values()) {
+            ships.add(new Ship(shipClass.name(), new Location(), shipClass, "owner"));
+        }
 
         final Iterator<Ship> shipIterator = ships.iterator();
         for (int r = 0; r < 5; r++) {
@@ -102,12 +92,7 @@ public class Client {
                 }
             }
         }
-    }
 
-    /**
-     * Run the client.
-     */
-    public void run() {
         runner.start();
         //serverConnector.run();
     }
@@ -119,6 +104,6 @@ public class Client {
      * @throws IOException if there is a problem loading game resources
      */
     public static void main(@Nullable final String... args) throws IOException {
-        new Client().run();
+        Client.run();
     }
 }

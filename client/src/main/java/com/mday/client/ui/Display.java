@@ -33,9 +33,9 @@ import javax.swing.WindowConstants;
 public class Display implements EventConsumer, KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(Display.class);
 
-    private static final boolean FULL_SCREEN = true;
     private static final Dimension FRAME_DIMENSION = new Dimension(640, 520);
 
+    private final boolean fullScreen;
     @Nonnull
     private final transient EventQueue eventQueue;
     @Nonnull
@@ -50,10 +50,14 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
     /**
      * Create an instance of the game display.
      *
+     * @param fullScreen whether the display should enter full-screen mode
      * @param eventQueue the event queue to which key and mouse events will be sent
      * @param coordinateSystem the coordinate system managing locations on the display surface
      */
-    public Display(@Nonnull final EventQueue eventQueue, @Nonnull final CoordinateSystem coordinateSystem) {
+    public Display(
+            final boolean fullScreen, @Nonnull final EventQueue eventQueue,
+            @Nonnull final CoordinateSystem coordinateSystem) {
+        this.fullScreen = fullScreen;
         this.eventQueue = eventQueue;
         this.coordinateSystem = coordinateSystem;
         this.graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
@@ -71,7 +75,7 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
     @Nonnull
     private Surface createSurface() {
         final Surface surface;
-        if (FULL_SCREEN) {
+        if (fullScreen) {
             final GraphicsConfiguration graphicsConfiguration = graphicsDevice.getDefaultConfiguration();
             coordinateSystem.setWidth((int) graphicsConfiguration.getBounds().getWidth());
             coordinateSystem.setHeight((int) graphicsConfiguration.getBounds().getHeight());
@@ -93,7 +97,7 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
     private JFrame createFrame(@Nonnull final Surface surface) {
         final JFrame frame = new JFrame(graphicsDevice.getDefaultConfiguration());
         frame.add(surface);
-        if (FULL_SCREEN) {
+        if (fullScreen) {
             frame.setUndecorated(true);
         } else {
             frame.setResizable(true);
@@ -116,7 +120,7 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
         frame.setVisible(true);
         frame.setIgnoreRepaint(true);
 
-        if (FULL_SCREEN) {
+        if (fullScreen) {
             graphicsDevice.setFullScreenWindow(frame);
         }
     }
@@ -125,7 +129,7 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
         frame.setVisible(false);
         frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
         frame.dispose();
-        if (FULL_SCREEN) {
+        if (fullScreen) {
             graphicsDevice.setFullScreenWindow(null);
         }
     }

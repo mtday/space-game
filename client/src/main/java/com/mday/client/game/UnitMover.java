@@ -56,7 +56,7 @@ public class UnitMover implements ClockTickObserver {
     }
 
     private void updateMovementAcceleration(@Nonnull final Unit unit, @Nonnull final Movement movement) {
-        if (movement.accelerating && movement.currentMovementSpeed != movement.targetMovementSpeed) {
+        if (movement.accelerating && Math.abs(movement.currentMovementSpeed - movement.targetMovementSpeed) > 0.05) {
             movement.currentMovementSpeed += movement.targetMovementSpeed * movement.acceleration;
             movement.accelerationDistance = movement.start.getDistanceTo(unit.getLocation());
             if (movement.currentMovementSpeed >= movement.targetMovementSpeed) {
@@ -174,12 +174,12 @@ public class UnitMover implements ClockTickObserver {
         @Nonnull
         private final Map<String, Boolean> traverseCompletionMap;
 
-        MovementGroup(final Unit unit) {
+        MovementGroup(@Nonnull final Unit unit) {
             traverseCompletionMap = new HashMap<>();
             traverseCompletionMap.put(unit.getId(), false);
         }
 
-        MovementGroup(final Collection<Unit> units) {
+        MovementGroup(@Nonnull final Collection<Unit> units) {
             traverseCompletionMap = new HashMap<>();
             units.forEach(unit -> traverseCompletionMap.put(unit.getId(), false));
         }
