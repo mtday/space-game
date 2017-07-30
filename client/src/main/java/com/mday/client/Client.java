@@ -79,7 +79,6 @@ public class Client {
         runner.addEventConsumer(new MouseAction(eventQueue, units));
         runner.addEventConsumer(new MouseZoomAction(eventQueue));
 
-        int id = 0;
         final List<Ship> ships = Arrays.asList(
                 new Ship(new Location(), ShipClass.SHIPYARD, "me"),
                 new Ship(new Location(), ShipClass.RECON, "me"),
