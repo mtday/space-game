@@ -35,15 +35,18 @@ import javax.annotation.Nullable;
  * Starts the game client.
  */
 public class Client {
-    private final ServerConnector serverConnector;
-    private final Runner runner;
+    private static final ServerConnector serverConnector;
+    private static final Runner runner;
 
     /**
-     * Create an instance of the client.
+     * Prepares the client for running
      *
      * @throws IOException if there is a problem loading game resources
      */
-    public Client() throws IOException {
+    public static void init() throws IOException {
+        //Make sure that this isn't run twice!
+        if(runner != null)return;
+        
         final EventQueue eventQueue = new EventQueue();
         serverConnector = new ServerConnector("localhost", 33445, eventQueue);
 
@@ -78,19 +81,18 @@ public class Client {
         runner.addEventConsumer(new MouseAction(eventQueue, units));
         runner.addEventConsumer(new MouseZoomAction(eventQueue));
 
-        int id = 0;
         final List<Ship> ships = Arrays.asList(
-                new Ship(String.valueOf(++id), new Location(), ShipClass.SHIPYARD, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.RECON, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.FIGHTER, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.FRIGATE, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.DESTROYER, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.DREADNOUGHT, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.TRANSPORT, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.RESEARCH, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.REPAIR, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.COLLECTOR, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.SHIELD_GENERATOR, "me"));
+                new Ship(new Location(), ShipClass.SHIPYARD, "me"),
+                new Ship(new Location(), ShipClass.RECON, "me"),
+                new Ship(new Location(), ShipClass.FIGHTER, "me"),
+                new Ship(new Location(), ShipClass.FRIGATE, "me"),
+                new Ship(new Location(), ShipClass.DESTROYER, "me"),
+                new Ship(new Location(), ShipClass.DREADNOUGHT, "me"),
+                new Ship(new Location(), ShipClass.TRANSPORT, "me"),
+                new Ship(new Location(), ShipClass.RESEARCH, "me"),
+                new Ship(new Location(), ShipClass.REPAIR, "me"),
+                new Ship(new Location(), ShipClass.COLLECTOR, "me"),
+                new Ship(new Location(), ShipClass.SHIELD_GENERATOR, "me"));
 
         final Iterator<Ship> shipIterator = ships.iterator();
         for (int r = 0; r < 5; r++) {
@@ -107,7 +109,7 @@ public class Client {
     /**
      * Run the client.
      */
-    public void run() {
+    public static void run() {
         runner.start();
         //serverConnector.run();
     }
@@ -116,9 +118,16 @@ public class Client {
      * The entry-point into the game client.
      *
      * @param args the command-line arguments
-     * @throws IOException if there is a problem loading game resources
      */
-    public static void main(@Nullable final String... args) throws IOException {
-        new Client().run();
+    public static void main(@Nullable final String... args) {
+        try{
+            init();
+        }catch(IOException e){
+            //Replace this with however you like to log errors
+            
+            System.err.println("We screwed up a lot and should tell the user about it...");
+        }
+        
+        run();
     }
 }
