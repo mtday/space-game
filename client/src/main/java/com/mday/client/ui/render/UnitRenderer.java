@@ -12,6 +12,7 @@ import com.mday.common.model.UnitType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
@@ -33,8 +34,9 @@ public class UnitRenderer implements SurfaceConsumer {
      * Create an instance of this class.
      *
      * @param units the container of all the known units
+     * @throws IOException if there is a problem loading an image
      */
-    public UnitRenderer(@Nonnull final Units units) {
+    public UnitRenderer(@Nonnull final Units units) throws IOException {
         this.units = units;
 
         unitRenderers.put(SHIP, new ShipRenderer());

@@ -1,14 +1,10 @@
 package com.mday.client.ui.render.unit.ship;
 
-import com.mday.client.ui.Surface;
 import com.mday.client.ui.render.unit.AbstractShipRenderer;
-import com.mday.common.model.Ship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Color;
-
-import javax.annotation.Nonnull;
+import java.io.IOException;
 
 /**
  * Responsible for rendering the recon drone.
@@ -16,14 +12,12 @@ import javax.annotation.Nonnull;
 public class TransportRenderer extends AbstractShipRenderer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransportRenderer.class);
 
-    @Nonnull
-    @Override
-    protected Color getColor() {
-        return new Color(145, 174, 13);
-    }
-
-    @Override
-    public void accept(@Nonnull final Ship ship, @Nonnull final Surface surface) {
-        super.accept(ship, surface);
+    /**
+     * Create an instance of this renderer.
+     *
+     * @throws IOException if there is a problem loading the ship image
+     */
+    public TransportRenderer() throws IOException {
+        super("ship10.png");
     }
 }

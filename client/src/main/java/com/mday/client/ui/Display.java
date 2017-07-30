@@ -8,12 +8,24 @@ import com.mday.client.game.EventQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Dimension;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.awt.event.WindowEvent;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 /**
  * Provides the game display.
@@ -79,7 +91,6 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
     @Nonnull
     private JFrame createFrame(@Nonnull final Surface surface) {
         final JFrame frame = new JFrame(graphicsDevice.getDefaultConfiguration());
-        frame.setIgnoreRepaint(true);
         frame.add(surface);
         if (FULL_SCREEN) {
             frame.setUndecorated(true);

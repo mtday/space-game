@@ -31,6 +31,7 @@ import com.mday.common.model.Unit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
@@ -47,8 +48,10 @@ public class ShipRenderer extends AbstractUnitRenderer {
 
     /**
      * Create an instance of this class.
+     *
+     * @throws IOException if any of the renderers are unable to load the ship images
      */
-    public ShipRenderer() {
+    public ShipRenderer() throws IOException {
         shipRenderers.put(SHIPYARD, new ShipyardRenderer());
         shipRenderers.put(RECON, new ReconRenderer());
         shipRenderers.put(FIGHTER, new FighterRenderer());

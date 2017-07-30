@@ -23,6 +23,7 @@ import com.mday.common.model.Location;
 import com.mday.common.model.Ship;
 import com.mday.common.model.ShipClass;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -38,8 +39,10 @@ public class Client {
 
     /**
      * Create an instance of the client.
+     *
+     * @throws IOException if there is a problem loading game resources
      */
-    public Client() {
+    public Client() throws IOException {
         final EventQueue eventQueue = new EventQueue();
         serverConnector = new ServerConnector("localhost", 33445, eventQueue);
 
@@ -111,8 +114,9 @@ public class Client {
      * The entry-point into the game client.
      *
      * @param args the command-line arguments
+     * @throws IOException if there is a problem loading game resources
      */
-    public static void main(@Nullable final String... args) {
+    public static void main(@Nullable final String... args) throws IOException {
         new Client().run();
     }
 }
