@@ -59,11 +59,34 @@ public class UnitMover implements ClockTickObserver {
         }
     }
 
+    private void updateMovementAcceleration(@Nonnull final Unit unit, @Nonnull final Movement movement) {
+        if (movement.accelerating && movement.currentMovementSpeed != movement.targetMovementSpeed) {
+            movement.currentMovementSpeed += movement.targetMovementSpeed * movement.acceleration;
+            movement.accelerationDistance = movement.start.getDistanceTo(unit.getLocation());
+            if (movement.currentMovementSpeed >= movement.targetMovementSpeed) {
+                movement.currentMovementSpeed = movement.targetMovementSpeed;
+                movement.accelerating = false;
+            }
+        }
+        if (movement.decelerating) {
+            movement.currentMovementSpeed -= movement.targetMovementSpeed * movement.acceleration;
+        }
+
+        final double distance = unit.getLocation().getDistanceTo(movement.destination);
+        if (!movement.decelerating && distance < movement.accelerationDistance) {
+            movement.decelerating = true;
+            movement.accelerating = false;
+        }
+    }
+
     private void updateUnitLocation(@Nonnull final Unit unit, @Nonnull final Movement movement) {
+        updateMovementAcceleration(unit, movement);
+
         final double distance = unit.getLocation().getDistanceTo(movement.destination);
         final Location direction = movement.destination.subtract(unit.getLocation()).getNormalized();
-        final Location scaledDirection = direction.multiply(movement.movementSpeed).multiply(MOVEMENT_FACTOR);
+        final Location scaledDirection = direction.multiply(movement.currentMovementSpeed).multiply(MOVEMENT_FACTOR);
         final Location updatedUnitLocation = unit.getLocation().add(scaledDirection);
+
         final double updatedDistance = unit.getLocation().getDistanceTo(updatedUnitLocation);
         if (updatedDistance > distance) {
             unit.setLocation(movement.destination);
@@ -99,7 +122,8 @@ public class UnitMover implements ClockTickObserver {
             // The destination is inside the group of units, so move the units individually instead of as a group.
             for (final Unit unit : units) {
                 if (unit.isMovable()) {
-                    moving.put(unit, new Movement(destination, unit.getMovementSpeed(), unit.getTraverseSpeed()));
+                    moving.put(unit, new Movement(unit.getLocation(), destination, unit.getMovementSpeed(),
+                            unit.getAcceleration(), unit.getTraverseSpeed()));
                 }
             }
         } else {
@@ -120,12 +144,16 @@ public class UnitMover implements ClockTickObserver {
                 // Calculate the slowest movement speed of all units, since they are going to stay in formation.
                 final double movementSpeed = units.stream().mapToDouble(Unit::getMovementSpeed).min().orElse(0);
 
+                // Calculate the slowest acceleration of all units, since they are going to stay in formation.
+                final double acceleration = units.stream().mapToDouble(Unit::getAcceleration).min().orElse(0);
+
                 // Calculate the slowest traverse speed of all units, since they are going to stay in formation.
                 final double traverseSpeed = units.stream().mapToDouble(Unit::getTraverseSpeed).min().orElse(0);
 
                 // Add the unit to the moving map using the relative location of the unit compared to the center of mass
                 // of all the units that need to move.
-                moving.put(unit, new Movement(unitDestination, movementSpeed, traverseSpeed));
+                moving.put(unit,
+                        new Movement(unit.getLocation(), unitDestination, movementSpeed, acceleration, traverseSpeed));
             }
         }
     }
@@ -149,13 +177,26 @@ public class UnitMover implements ClockTickObserver {
 
     private static class Movement {
         @Nonnull
+        private final Location start;
+        @Nonnull
         private final Location destination;
-        private final double movementSpeed;
+        private final double targetMovementSpeed;
+        private final double acceleration;
         private final double traverseSpeed;
 
-        Movement(@Nonnull final Location destination, final double movementSpeed, final double traverseSpeed) {
+        private boolean accelerating = true;
+        private boolean decelerating = false;
+
+        private double currentMovementSpeed = 0;
+        private double accelerationDistance = 0;
+
+        Movement(
+                @Nonnull final Location start, @Nonnull final Location destination, final double targetMovementSpeed,
+                final double acceleration, final double traverseSpeed) {
+            this.start = start;
             this.destination = destination;
-            this.movementSpeed = movementSpeed;
+            this.targetMovementSpeed = targetMovementSpeed;
+            this.acceleration = acceleration;
             this.traverseSpeed = traverseSpeed;
         }
     }

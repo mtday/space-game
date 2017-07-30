@@ -20,6 +20,7 @@ public class Unit implements Comparable<Unit> {
     private boolean selected = false;
     private boolean movable = false;
     private double movementSpeed = 10.0;
+    private double acceleration = 1 / 100.0;
     private double traverseSpeed = 10.0 * Math.PI / 180;
     private double direction = 0;
 
@@ -154,6 +155,24 @@ public class Unit implements Comparable<Unit> {
      */
     public double getTraverseSpeed() {
         return traverseSpeed;
+    }
+
+    /**
+     * Retrieve the acceleration for this unit.
+     *
+     * @return the acceleration for this unit
+     */
+    public double getAcceleration() {
+        return acceleration;
+    }
+
+    /**
+     * Set the acceleration for this unit.
+     *
+     * @param acceleration the new value indicating the acceleration for this unit
+     */
+    public void setAcceleration(final double acceleration) {
+        this.acceleration = acceleration;
     }
 
     /**
