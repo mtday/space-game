@@ -45,7 +45,7 @@ public class UnitRenderer implements SurfaceConsumer {
     @Override
     public void accept(@Nonnull final Surface surface) {
         units.getAll().stream()
-                .filter(unit -> surface.getCoordinateSystem().contains(unit.getLocation()))
+                .filter(unit -> surface.getCoordinateSystem().contains(unit.getLocation(), unit.getRadius()))
                 .forEach(unit -> renderUnit(unit, surface));
     }
 

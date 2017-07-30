@@ -1,10 +1,12 @@
 package com.mday.client.ui.render.debug;
 
+import static com.mday.common.model.UnitType.SHIP;
+import static java.util.stream.Collectors.toSet;
+
 import com.mday.client.game.Units;
 import com.mday.client.ui.Surface;
 import com.mday.client.ui.SurfaceConsumer;
 import com.mday.common.model.Ship;
-import com.mday.common.model.UnitType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +14,7 @@ import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 
@@ -39,19 +41,16 @@ public class SelectedShipRenderer implements SurfaceConsumer {
         final Graphics2D graphics = surface.getDrawGraphics();
         graphics.setColor(new Color(200, 200, 200));
 
-        final Set<String> selectedClasses = units.getSelected().stream()
-                .filter(unit -> unit.getUnitType() == UnitType.SHIP)
-                .map(unit -> (Ship) unit)
-                .map(ship -> ship.getShipClass().name())
-                .sorted()
-                .collect(Collectors.toSet());
+        final Set<String> selectedShipClasses = new TreeSet<>(
+                units.getSelected().stream().filter(unit -> unit.getUnitType() == SHIP)
+                        .map(unit -> (Ship) unit).map(ship -> ship.getShipClass().name()).collect(toSet()));
 
         final FontMetrics fontMetrics = graphics.getFontMetrics();
         //final int textHeight = fontMetrics.getMaxAscent() + fontMetrics.getMaxDescent();
-        final int textWidth = selectedClasses.stream().mapToInt(fontMetrics::stringWidth).max().orElse(0);
+        final int textWidth = selectedShipClasses.stream().mapToInt(fontMetrics::stringWidth).max().orElse(0);
 
         int displayed = 0;
-        for (final String shipClass : selectedClasses) {
+        for (final String shipClass : selectedShipClasses) {
             final int x = surface.getWidth() - textWidth - 15;
             final int y = 15 + (displayed * (fontMetrics.getHeight() + 5));
             graphics.drawString(shipClass, x, y);

@@ -350,8 +350,20 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
      * @return whether the current view area on the draw surface contains the specified location
      */
     public boolean contains(@Nonnull final Location location) {
-        final Location topLeft = getTopLeft();
-        final Location bottomRight = getBottomRight();
+        return contains(location, 0);
+    }
+
+    /**
+     * Determine whether the current view area on the draw surface contains the specified location, accounting for an
+     * area around the location with the specified radius.
+     *
+     * @param location the location to check for existence in the current view area of the draw surface
+     * @param radius the radius describing the full area to check for existence within the viewable area
+     * @return whether the current view area on the draw surface contains the specified location
+     */
+    public boolean contains(@Nonnull final Location location, final double radius) {
+        final Location topLeft = getTopLeft().subtract(radius, radius);
+        final Location bottomRight = getBottomRight().add(radius, radius);
         return location.getX() >= topLeft.getX() && location.getX() <= bottomRight.getX()
                 && location.getY() >= topLeft.getY() && location.getY() <= bottomRight.getY();
     }

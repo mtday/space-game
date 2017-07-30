@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
@@ -27,35 +29,29 @@ public class UnitMover implements ClockTickObserver {
         moving.forEach(this::move);
     }
 
-    private boolean updateUnitDirection(@Nonnull final Unit unit, @Nonnull final Movement movement) {
+    private void updateUnitDirection(@Nonnull final Unit unit, @Nonnull final Movement movement) {
         final Location direction = movement.destination.subtract(unit.getLocation()).getNormalized();
-        final double radians = (2.5 * Math.PI + Math.atan2(direction.getY(), direction.getX())) % (Math.PI * 2);
-        double deltaRadians = ((2.0 * Math.PI + unit.getDirection()) % (Math.PI * 2)) - radians;
-
+        final double radians = (Math.PI / 2) + Math.atan2(direction.getY(), direction.getX());
+        double deltaRadians = unit.getDirection() - radians;
         if (Math.abs(deltaRadians) > Math.PI && deltaRadians < 0) {
             deltaRadians += 2 * Math.PI;
+        } else if (Math.abs(deltaRadians) > Math.PI && deltaRadians > 0) {
+            deltaRadians -= 2 * Math.PI;
         }
 
         if (Math.abs(deltaRadians) > 20 * Math.PI / 180) {
-
             if (deltaRadians < 0) {
-                unit.setDirection(unit.getDirection() + movement.traverseSpeed);
+                unit.setDirection(unit.getDirection() + unit.getTraverseSpeed());
             } else {
-                unit.setDirection(unit.getDirection() - movement.traverseSpeed);
+                unit.setDirection(unit.getDirection() - unit.getTraverseSpeed());
             }
-
-            // The unit needs to traverse towards the correct direction more before it can move.
-            return false;
+        } else if (Math.abs(deltaRadians) < unit.getTraverseSpeed()) {
+            unit.setDirection(radians % (Math.PI * 2));
+            movement.movementGroup.setTraverseCompleted(unit);
+        } else if (deltaRadians < 0) {
+            unit.setDirection(unit.getDirection() + unit.getTraverseSpeed());
         } else {
-            if (Math.abs(deltaRadians) < movement.traverseSpeed) {
-                unit.setDirection(radians % (Math.PI * 2));
-            } else if (deltaRadians < 0) {
-                unit.setDirection(unit.getDirection() + movement.traverseSpeed);
-            } else {
-                unit.setDirection(unit.getDirection() - movement.traverseSpeed);
-            }
-
-            return true;
+            unit.setDirection(unit.getDirection() - unit.getTraverseSpeed());
         }
     }
 
@@ -100,7 +96,8 @@ public class UnitMover implements ClockTickObserver {
         if (unit.getLocation().equals(movement.destination)) {
             moving.remove(unit);
         } else {
-            if (updateUnitDirection(unit, movement)) {
+            updateUnitDirection(unit, movement);
+            if (movement.movementGroup.allTraversesComplete()) {
                 updateUnitLocation(unit, movement);
             }
         }
@@ -122,14 +119,15 @@ public class UnitMover implements ClockTickObserver {
             // The destination is inside the group of units, so move the units individually instead of as a group.
             for (final Unit unit : units) {
                 if (unit.isMovable()) {
-                    moving.put(unit, new Movement(unit.getLocation(), destination, unit.getMovementSpeed(),
-                            unit.getAcceleration(), unit.getTraverseSpeed()));
+                    moving.put(unit, new Movement(new MovementGroup(unit), unit.getLocation(), destination,
+                            unit.getMovementSpeed(), unit.getAcceleration()));
                 }
             }
         } else {
             // The destination is outside of the center of mass of the unit group. Move the group as a cohesive unit,
             // keeping the current formation.
             final Location centerOfMass = getCenterOfMass(units);
+            final MovementGroup movementGroup = new MovementGroup(units);
             for (final Unit unit : units) {
                 if (!unit.isMovable()) {
                     continue;
@@ -147,13 +145,10 @@ public class UnitMover implements ClockTickObserver {
                 // Calculate the slowest acceleration of all units, since they are going to stay in formation.
                 final double acceleration = units.stream().mapToDouble(Unit::getAcceleration).min().orElse(0);
 
-                // Calculate the slowest traverse speed of all units, since they are going to stay in formation.
-                final double traverseSpeed = units.stream().mapToDouble(Unit::getTraverseSpeed).min().orElse(0);
-
                 // Add the unit to the moving map using the relative location of the unit compared to the center of mass
                 // of all the units that need to move.
                 moving.put(unit,
-                        new Movement(unit.getLocation(), unitDestination, movementSpeed, acceleration, traverseSpeed));
+                        new Movement(movementGroup, unit.getLocation(), unitDestination, movementSpeed, acceleration));
             }
         }
     }
@@ -175,14 +170,38 @@ public class UnitMover implements ClockTickObserver {
                 && maxY >= destination.getY();
     }
 
+    private static class MovementGroup {
+        @Nonnull
+        private final Map<String, Boolean> traverseCompletionMap;
+
+        MovementGroup(final Unit unit) {
+            traverseCompletionMap = new HashMap<>();
+            traverseCompletionMap.put(unit.getId(), false);
+        }
+
+        MovementGroup(final Collection<Unit> units) {
+            traverseCompletionMap = new HashMap<>();
+            units.forEach(unit -> traverseCompletionMap.put(unit.getId(), false));
+        }
+
+        void setTraverseCompleted(@Nonnull final Unit unit) {
+            traverseCompletionMap.put(unit.getId(), true);
+        }
+
+        boolean allTraversesComplete() {
+            return traverseCompletionMap.values().stream().allMatch(bool -> bool);
+        }
+    }
+
     private static class Movement {
+        @Nonnull
+        private final MovementGroup movementGroup;
         @Nonnull
         private final Location start;
         @Nonnull
         private final Location destination;
         private final double targetMovementSpeed;
         private final double acceleration;
-        private final double traverseSpeed;
 
         private boolean accelerating = true;
         private boolean decelerating = false;
@@ -191,13 +210,13 @@ public class UnitMover implements ClockTickObserver {
         private double accelerationDistance = 0;
 
         Movement(
-                @Nonnull final Location start, @Nonnull final Location destination, final double targetMovementSpeed,
-                final double acceleration, final double traverseSpeed) {
+                @Nonnull final MovementGroup movementGroup, @Nonnull final Location start,
+                @Nonnull final Location destination, final double targetMovementSpeed, final double acceleration) {
+            this.movementGroup = movementGroup;
             this.start = start;
             this.destination = destination;
             this.targetMovementSpeed = targetMovementSpeed;
             this.acceleration = acceleration;
-            this.traverseSpeed = traverseSpeed;
         }
     }
 }
