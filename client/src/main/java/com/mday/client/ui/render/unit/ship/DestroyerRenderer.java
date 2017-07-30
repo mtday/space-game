@@ -11,15 +11,15 @@ import java.awt.Color;
 import javax.annotation.Nonnull;
 
 /**
- * Responsible for rendering the shipyard.
+ * Responsible for rendering the recon drone.
  */
-public class ShipyardRenderer extends AbstractShipRenderer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ShipyardRenderer.class);
+public class DestroyerRenderer extends AbstractShipRenderer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DestroyerRenderer.class);
 
     @Nonnull
     @Override
     protected Color getColor() {
-        return new Color(172, 9, 174);
+        return new Color(34, 117, 174);
     }
 
     @Override

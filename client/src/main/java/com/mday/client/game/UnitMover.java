@@ -6,9 +6,10 @@ import com.mday.common.model.Unit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.annotation.Nonnull;
 
 /**
  * This class is responsible for moving units.
@@ -59,8 +60,8 @@ public class UnitMover implements ClockTickObserver {
         if (isInsideBoundingBox(units, destination)) {
             // The destination is inside the group of units, so move the units individually instead of as a group.
             for (final Unit unit : units) {
-                if (unit.isMoveable()) {
-                    moving.put(unit, new Movement(destination, unit.getSpeed()));
+                if (unit.isMovable()) {
+                    moving.put(unit, new Movement(destination, unit.getMovementSpeed()));
                 }
             }
         } else {
@@ -68,7 +69,7 @@ public class UnitMover implements ClockTickObserver {
             // keeping the current formation.
             final Location centerOfMass = getCenterOfMass(units);
             for (final Unit unit : units) {
-                if (!unit.isMoveable()) {
+                if (!unit.isMovable()) {
                     continue;
                 }
 
@@ -79,7 +80,7 @@ public class UnitMover implements ClockTickObserver {
                 final Location unitDestination = destination.subtract(delta);
 
                 // Calculate the slowest speed of all units, since they are going to stay in formation.
-                final double speed = units.stream().mapToDouble(Unit::getSpeed).min().orElse(0);
+                final double speed = units.stream().mapToDouble(Unit::getMovementSpeed).min().orElse(0);
 
                 // Add the unit to the moving map using the relative location of the unit compared to the center of mass
                 // of all the units that need to move.
@@ -107,8 +108,8 @@ public class UnitMover implements ClockTickObserver {
 
     private static class Movement {
         @Nonnull
-        private Location destination;
-        private double speed;
+        private final Location destination;
+        private final double speed;
 
         Movement(@Nonnull final Location destination, final double speed) {
             this.destination = destination;

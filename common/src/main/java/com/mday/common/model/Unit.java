@@ -1,9 +1,10 @@
 package com.mday.common.model;
 
+import java.util.Objects;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
 
 /**
  * The base class for units.
@@ -17,8 +18,10 @@ public class Unit implements Comparable<Unit> {
     private Location location;
     private double radius = 10.0;
     private boolean selected = false;
-    private boolean moveable = false;
-    private double speed = 10.0;
+    private boolean movable = false;
+    private double movementSpeed = 10.0;
+    private double traverseSpeed = 10.0 * Math.PI / 180;
+    private double direction = 0;
 
     /**
      * Create a new unit instance.
@@ -113,17 +116,17 @@ public class Unit implements Comparable<Unit> {
      *
      * @return whether this unit can be moved
      */
-    public boolean isMoveable() {
-        return moveable;
+    public boolean isMovable() {
+        return movable;
     }
 
     /**
      * Set whether this unit can be moved.
      *
-     * @param moveable the new value indicating whether this unit can be moved
+     * @param movable the new value indicating whether this unit can be moved
      */
-    public void setMoveable(final boolean moveable) {
-        this.moveable = moveable;
+    public void setMovable(final boolean movable) {
+        this.movable = movable;
     }
 
     /**
@@ -131,17 +134,53 @@ public class Unit implements Comparable<Unit> {
      *
      * @return the movement speed for this unit
      */
-    public double getSpeed() {
-        return speed;
+    public double getMovementSpeed() {
+        return movementSpeed;
     }
 
     /**
      * Set the movement speed for this unit.
      *
-     * @param speed the new value indicating the movement speed for this unit
+     * @param movementSpeed the new value indicating the movement speed for this unit
      */
-    public void setSpeed(final double speed) {
-        this.speed = speed;
+    public void setMovementSpeed(final double movementSpeed) {
+        this.movementSpeed = movementSpeed;
+    }
+
+    /**
+     * Retrieve the traverse speed for this unit.
+     *
+     * @return the traverse speed for this unit
+     */
+    public double getTraverseSpeed() {
+        return traverseSpeed;
+    }
+
+    /**
+     * Set the traverse speed for this unit.
+     *
+     * @param traverseSpeed the new value indicating the traverse speed for this unit
+     */
+    public void setTraverseSpeed(final double traverseSpeed) {
+        this.traverseSpeed = traverseSpeed;
+    }
+
+    /**
+     * Retrieve the angular direction of this unit in radians.
+     *
+     * @return the angular direction of this unit in radians
+     */
+    public double getDirection() {
+        return direction;
+    }
+
+    /**
+     * Set the angular direction of this unit in radians.
+     *
+     * @param direction the new angular direction of this unit in radians
+     */
+    public void setDirection(final double direction) {
+        this.direction = direction;
     }
 
     @Override

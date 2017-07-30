@@ -1,10 +1,10 @@
 package com.mday.common.model;
 
+import static com.mday.common.model.UnitType.SHIP;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import javax.annotation.Nonnull;
-
-import static com.mday.common.model.UnitType.SHIP;
 
 /**
  * The base class for ships.
@@ -12,37 +12,35 @@ import static com.mday.common.model.UnitType.SHIP;
 @SuppressFBWarnings("EQ_DOESNT_OVERRIDE_EQUALS")
 public class Ship extends Unit {
     @Nonnull
-    private final ShipType shipType;
+    private final ShipClass shipClass;
     @Nonnull
     private final String owner;
-    private int direction = 0;
 
     /**
      * Create a new ship instance.
      *
      * @param id the unique id of this ship
      * @param location the location of this ship
-     * @param shipType the type of this ship
+     * @param shipClass the type of this ship
      * @param owner the id of the owner of this ship
      */
-    public Ship(@Nonnull final String id, @Nonnull final Location location, @Nonnull final ShipType shipType,
+    public Ship(@Nonnull final String id, @Nonnull final Location location, @Nonnull final ShipClass shipClass,
             @Nonnull final String owner) {
         super(SHIP, id, location);
-        this.shipType = shipType;
+        this.shipClass = shipClass;
         this.owner = owner;
-        setRadius(shipType.getRadius());
-        setSpeed(shipType.getSpeed());
-        setMoveable(true);
+        setRadius(shipClass.getShipConfiguration().getRadius());
+        setMovable(true);
     }
 
     /**
-     * Retrieve the type of this ship.
+     * Retrieve the class of this ship.
      *
-     * @return the type of this ship
+     * @return the class of this ship
      */
     @Nonnull
-    public ShipType getShipType() {
-        return shipType;
+    public ShipClass getShipClass() {
+        return shipClass;
     }
 
     /**
@@ -55,28 +53,30 @@ public class Ship extends Unit {
         return owner;
     }
 
-    /**
-     * Retrieve the angular direction of this unit in degrees.
-     *
-     * @return the angular direction of this unit in degrees
-     */
-    public int getDirection() {
-        return direction;
+    @Override
+    public double getMovementSpeed() {
+        // TODO: Use engines in this algorithm.
+        final int maxWeight = 140;
+        final double multiplier = 1.5;
+        final double weight = getShipClass().getShipConfiguration().getWeight();
+        final int engines = getShipClass().getShipConfiguration().getEngines();
+        return (maxWeight - weight) / engines * multiplier;
     }
 
-    /**
-     * Set the angular direction of this unit in degrees.
-     *
-     * @param direction the new angular direction of this unit in degrees
-     */
-    public void setDirection(final int direction) {
-        this.direction = direction;
+    @Override
+    public double getTraverseSpeed() {
+        // TODO: Use thrusters in this algorithm.
+        final int maxWeight = 140;
+        final double multiplier = 0.5;
+        final double weight = getShipClass().getShipConfiguration().getWeight();
+        final int thrusters = getShipClass().getShipConfiguration().getThrusters();
+        return (maxWeight - weight) / thrusters * multiplier;
     }
 
     @Override
     @Nonnull
     public String toString() {
-        return String.format("Ship[unit=%s, shipType=%s, owner=%s]",
-                super.toString(), getShipType().name(), getOwner());
+        return String.format("Ship[unit=%s, shipClass=%s, owner=%s]",
+                super.toString(), getShipClass().name(), getOwner());
     }
 }

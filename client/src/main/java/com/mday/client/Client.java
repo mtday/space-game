@@ -2,25 +2,30 @@ package com.mday.client;
 
 import com.mday.client.action.key.ArrowKeyAction;
 import com.mday.client.action.key.EscapeKeyAction;
-import com.mday.client.action.mouse.MouseAction;
 import com.mday.client.action.key.ZoomKeyAction;
+import com.mday.client.action.mouse.MouseAction;
 import com.mday.client.action.mouse.MouseZoomAction;
 import com.mday.client.event.type.unit.UnitAddEvent;
+import com.mday.client.game.CoordinateSystem;
 import com.mday.client.game.EventQueue;
 import com.mday.client.game.Runner;
 import com.mday.client.game.UnitMover;
 import com.mday.client.game.Units;
 import com.mday.client.io.ServerConnector;
-import com.mday.client.game.CoordinateSystem;
 import com.mday.client.ui.Display;
-import com.mday.client.ui.render.*;
+import com.mday.client.ui.render.BackgroundRenderer;
+import com.mday.client.ui.render.MouseSelectionRenderer;
+import com.mday.client.ui.render.UnitRenderer;
 import com.mday.client.ui.render.debug.GridRenderer;
 import com.mday.client.ui.render.debug.MousePositionRenderer;
 import com.mday.client.ui.render.debug.ScaleRenderer;
 import com.mday.common.model.Location;
-import com.mday.common.model.unit.ReconDroneUnit;
-import com.mday.common.model.unit.ResearchVesselUnit;
-import com.mday.common.model.unit.ShipyardUnit;
+import com.mday.common.model.Ship;
+import com.mday.common.model.ShipClass;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -68,9 +73,30 @@ public class Client {
         runner.addEventConsumer(new MouseAction(eventQueue, units));
         runner.addEventConsumer(new MouseZoomAction(eventQueue));
 
-        eventQueue.add(new UnitAddEvent(new ReconDroneUnit("recon", new Location(-100, -50), "me")));
-        eventQueue.add(new UnitAddEvent(new ShipyardUnit("shipyard", new Location(0, 0), "me")));
-        eventQueue.add(new UnitAddEvent(new ResearchVesselUnit("research", new Location(100, 50), "me")));
+        int id = 0;
+        final List<Ship> ships = Arrays.asList(
+                new Ship(String.valueOf(++id), new Location(), ShipClass.SHIPYARD, "me"),
+                new Ship(String.valueOf(++id), new Location(), ShipClass.RECON, "me"),
+                new Ship(String.valueOf(++id), new Location(), ShipClass.FIGHTER, "me"),
+                new Ship(String.valueOf(++id), new Location(), ShipClass.FRIGATE, "me"),
+                new Ship(String.valueOf(++id), new Location(), ShipClass.DESTROYER, "me"),
+                new Ship(String.valueOf(++id), new Location(), ShipClass.DREADNOUGHT, "me"),
+                new Ship(String.valueOf(++id), new Location(), ShipClass.TRANSPORT, "me"),
+                new Ship(String.valueOf(++id), new Location(), ShipClass.RESEARCH, "me"),
+                new Ship(String.valueOf(++id), new Location(), ShipClass.REPAIR, "me"),
+                new Ship(String.valueOf(++id), new Location(), ShipClass.COLLECTOR, "me"),
+                new Ship(String.valueOf(++id), new Location(), ShipClass.SHIELD_GENERATOR, "me"));
+
+        final Iterator<Ship> shipIterator = ships.iterator();
+        for (int r = 0; r < 5; r++) {
+            for (int c = 0; c < 5; c++) {
+                if (shipIterator.hasNext()) {
+                    final Ship ship = shipIterator.next();
+                    ship.setLocation(new Location(-210 + c * 100, -140 + r * 90));
+                    eventQueue.add(new UnitAddEvent(ship));
+                }
+            }
+        }
     }
 
     /**

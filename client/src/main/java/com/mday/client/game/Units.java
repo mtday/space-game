@@ -1,22 +1,31 @@
 package com.mday.client.game;
 
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
+
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
-import com.mday.client.event.type.unit.*;
+import com.mday.client.event.type.unit.UnitAddEvent;
+import com.mday.client.event.type.unit.UnitDeselectEvent;
+import com.mday.client.event.type.unit.UnitMoveEvent;
+import com.mday.client.event.type.unit.UnitRemoveEvent;
+import com.mday.client.event.type.unit.UnitSelectEvent;
 import com.mday.common.model.Location;
 import com.mday.common.model.Unit;
 import com.mday.common.model.UnitType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Manages the units that are known in the game as a mapping between unique unit id and unit.
@@ -124,7 +133,7 @@ public class Units implements EventConsumer {
             unitsSelected = false;
         } else if (event instanceof UnitMoveEvent) {
             final UnitMoveEvent unitMoveEvent = (UnitMoveEvent) event;
-            final List<Unit> selectedMoveable = getSelected().stream().filter(Unit::isMoveable).collect(toList());
+            final List<Unit> selectedMoveable = getSelected().stream().filter(Unit::isMovable).collect(toList());
             unitMover.add(selectedMoveable, coordinateSystem.toLocation(unitMoveEvent.getDestination()));
         }
     }
