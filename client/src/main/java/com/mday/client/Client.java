@@ -81,17 +81,17 @@ public class Client {
 
         int id = 0;
         final List<Ship> ships = Arrays.asList(
-                new Ship(String.valueOf(++id), new Location(), ShipClass.SHIPYARD, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.RECON, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.FIGHTER, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.FRIGATE, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.DESTROYER, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.DREADNOUGHT, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.TRANSPORT, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.RESEARCH, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.REPAIR, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.COLLECTOR, "me"),
-                new Ship(String.valueOf(++id), new Location(), ShipClass.SHIELD_GENERATOR, "me"));
+                new Ship(new Location(), ShipClass.SHIPYARD, "me"),
+                new Ship(new Location(), ShipClass.RECON, "me"),
+                new Ship(new Location(), ShipClass.FIGHTER, "me"),
+                new Ship(new Location(), ShipClass.FRIGATE, "me"),
+                new Ship(new Location(), ShipClass.DESTROYER, "me"),
+                new Ship(new Location(), ShipClass.DREADNOUGHT, "me"),
+                new Ship(new Location(), ShipClass.TRANSPORT, "me"),
+                new Ship(new Location(), ShipClass.RESEARCH, "me"),
+                new Ship(new Location(), ShipClass.REPAIR, "me"),
+                new Ship(new Location(), ShipClass.COLLECTOR, "me"),
+                new Ship(new Location(), ShipClass.SHIELD_GENERATOR, "me"));
 
         final Iterator<Ship> shipIterator = ships.iterator();
         for (int r = 0; r < 5; r++) {
