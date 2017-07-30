@@ -56,23 +56,22 @@ public class UnitMover implements ClockTickObserver {
     }
 
     private void updateMovementAcceleration(@Nonnull final Unit unit, @Nonnull final Movement movement) {
-        if (movement.accelerating && movement.currentMovementSpeed != movement.targetMovementSpeed) {
-            movement.currentMovementSpeed += movement.targetMovementSpeed * movement.acceleration;
-            movement.accelerationDistance = movement.start.getDistanceTo(unit.getLocation());
-            if (movement.currentMovementSpeed >= movement.targetMovementSpeed) {
-                movement.currentMovementSpeed = movement.targetMovementSpeed;
+        final double distance = unit.getLocation().getDistanceTo(movement.destination);
+        
+        if (movement.accelerating) {
+            if(movement.currentMovementSpeed != movement.targetMovementSpeed){
+                movement.currentMovementSpeed += movement.targetMovementSpeed * movement.acceleration;
+                movement.accelerationDistance = movement.start.getDistanceTo(unit.getLocation());
+                if (movement.currentMovementSpeed >= movement.targetMovementSpeed) {
+                    movement.currentMovementSpeed = movement.targetMovementSpeed;
+                    movement.accelerating = false;
+                }
+            } else if (movement.accelerating && distance < movement.accelerationDistance) {
                 movement.accelerating = false;
             }
-        }
-        if (movement.decelerating) {
+        } else {
             movement.currentMovementSpeed -= movement.targetMovementSpeed * movement.acceleration;
-        }
-
-        final double distance = unit.getLocation().getDistanceTo(movement.destination);
-        if (!movement.decelerating && distance < movement.accelerationDistance) {
-            movement.decelerating = true;
-            movement.accelerating = false;
-        }
+        }        
     }
 
     private void updateUnitLocation(@Nonnull final Unit unit, @Nonnull final Movement movement) {
@@ -204,7 +203,6 @@ public class UnitMover implements ClockTickObserver {
         private final double acceleration;
 
         private boolean accelerating = true;
-        private boolean decelerating = false;
 
         private double currentMovementSpeed = 0;
         private double accelerationDistance = 0;
