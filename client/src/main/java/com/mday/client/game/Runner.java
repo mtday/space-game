@@ -1,5 +1,8 @@
 package com.mday.client.game;
 
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import com.mday.client.event.ClockTickObserver;
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
@@ -9,15 +12,13 @@ import com.mday.client.ui.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
+import javax.annotation.Nonnull;
 
 /**
  * Responsible for managing the game event loop.

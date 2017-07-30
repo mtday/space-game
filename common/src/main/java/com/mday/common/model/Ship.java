@@ -56,21 +56,13 @@ public class Ship extends Unit {
     @Override
     public double getMovementSpeed() {
         // TODO: Use engines in this algorithm.
-        final int maxWeight = 140;
-        final double multiplier = 1.5;
-        final double weight = getShipClass().getShipConfiguration().getWeight();
-        final int engines = getShipClass().getShipConfiguration().getEngines();
-        return (maxWeight - weight) / engines * multiplier;
+        return getShipClass().getShipConfiguration().getMovementSpeed();
     }
 
     @Override
     public double getTraverseSpeed() {
         // TODO: Use thrusters in this algorithm.
-        final int maxWeight = 140;
-        final double multiplier = 0.05;
-        final double weight = getShipClass().getShipConfiguration().getWeight();
-        final int thrusters = getShipClass().getShipConfiguration().getThrusters();
-        return (maxWeight - weight) / thrusters * multiplier * Math.PI / 180;
+        return getShipClass().getShipConfiguration().getTraverseSpeed();
     }
 
     @Override

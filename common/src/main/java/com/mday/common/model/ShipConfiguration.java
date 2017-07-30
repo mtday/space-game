@@ -7,7 +7,9 @@ import javax.annotation.Nonnull;
  */
 public class ShipConfiguration {
     private final double radius;
-    private final double weight;
+    private final double movementSpeed;
+    private final double acceleration;
+    private final double traverseSpeed;
     private final int hitPoints;
     private final int engines;
     private final int thrusters;
@@ -17,10 +19,13 @@ public class ShipConfiguration {
     private final int energy;
 
     private ShipConfiguration(
-            final double radius, final double weight, final int hitPoints, final int engines, final int thrusters,
-            final int sensors, final int defenses, final int weapons, final int energy) {
+            final double radius, final double movementSpeed, final double acceleration, final double traverseSpeed,
+            final int hitPoints, final int engines, final int thrusters, final int sensors, final int defenses,
+            final int weapons, final int energy) {
         this.radius = radius;
-        this.weight = weight;
+        this.traverseSpeed = traverseSpeed;
+        this.movementSpeed = movementSpeed;
+        this.acceleration = acceleration;
         this.hitPoints = hitPoints;
         this.engines = engines;
         this.thrusters = thrusters;
@@ -40,12 +45,30 @@ public class ShipConfiguration {
     }
 
     /**
-     * Retrieve the weight of the ship.
+     * Retrieve the movement speed of the ship.
      *
-     * @return the weight of the ship
+     * @return the movement speed of the ship
      */
-    public double getWeight() {
-        return weight;
+    public double getMovementSpeed() {
+        return movementSpeed;
+    }
+
+    /**
+     * Retrieve the acceleration of the ship.
+     *
+     * @return the acceleration of the ship
+     */
+    public double getAcceleration() {
+        return acceleration;
+    }
+
+    /**
+     * Retrieve the traverse speed of the ship.
+     *
+     * @return the traverse speed of the ship
+     */
+    public double getTraverseSpeed() {
+        return traverseSpeed;
     }
 
     /**
@@ -116,7 +139,9 @@ public class ShipConfiguration {
      */
     public static class Builder {
         private double radius = 0;
-        private double weight = 0;
+        private double movementSpeed = 0;
+        private double acceleration = 0;
+        private double traverseSpeed = 0;
         private int hitPoints = 0;
         private int engines = 0;
         private int thrusters = 0;
@@ -138,14 +163,38 @@ public class ShipConfiguration {
         }
 
         /**
-         * Set the weight to use when creating the ship configuration.
+         * Set the movement speed to use when creating the ship configuration.
          *
-         * @param weight the new weight value
+         * @param movementSpeed the new movement speed value
          * @return {@code this}
          */
         @Nonnull
-        public Builder withWeight(final double weight) {
-            this.weight = weight;
+        public Builder withMovementSpeed(final double movementSpeed) {
+            this.movementSpeed = movementSpeed;
+            return this;
+        }
+
+        /**
+         * Set the acceleration to use when creating the ship configuration.
+         *
+         * @param acceleration the new acceleration value
+         * @return {@code this}
+         */
+        @Nonnull
+        public Builder withAcceleration(final double acceleration) {
+            this.acceleration = acceleration;
+            return this;
+        }
+
+        /**
+         * Set the traverse speed to use when creating the ship configuration.
+         *
+         * @param traverseSpeed the new traverse speed value
+         * @return {@code this}
+         */
+        @Nonnull
+        public Builder withTraverseSpeed(final double traverseSpeed) {
+            this.traverseSpeed = traverseSpeed;
             return this;
         }
 
@@ -241,7 +290,8 @@ public class ShipConfiguration {
         @Nonnull
         public ShipConfiguration build() {
             return new ShipConfiguration(
-                    radius, weight, hitPoints, engines, thrusters, sensors, defenses, weapons, energy);
+                    radius, movementSpeed, acceleration, traverseSpeed, hitPoints, engines, thrusters, sensors,
+                    defenses, weapons, energy);
         }
     }
 }
