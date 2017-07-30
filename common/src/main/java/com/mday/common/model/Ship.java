@@ -32,6 +32,18 @@ public class Ship extends Unit {
         setRadius(shipClass.getShipConfiguration().getRadius());
         setMovable(true);
     }
+    /**
+     * Alternative constructor without defined ID.
+     * Can create around 10 million objects with essentially
+     * no collisions. 
+     *
+     * @param location the location of this ship
+     * @param shipClass the type of this ship
+     * @param owner the id of the owner of this ship
+     */
+    public Ship(@Nonnull final Location location, @Nonnull final ShipClass shipClass, @Nonnull final String owner){
+        this(new BigInteger(100, new Random()).toString(), location, shipClass, owner);
+    }
 
     /**
      * Retrieve the class of this ship.
