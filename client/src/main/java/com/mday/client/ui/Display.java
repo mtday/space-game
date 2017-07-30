@@ -33,7 +33,7 @@ import javax.swing.WindowConstants;
 public class Display implements EventConsumer, KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(Display.class);
 
-    private static final boolean FULL_SCREEN = false;
+    private static final boolean FULL_SCREEN = true;
     private static final Dimension FRAME_DIMENSION = new Dimension(640, 520);
 
     @Nonnull
@@ -75,6 +75,7 @@ public class Display implements EventConsumer, KeyListener, MouseListener, Mouse
             final GraphicsConfiguration graphicsConfiguration = graphicsDevice.getDefaultConfiguration();
             coordinateSystem.setWidth((int) graphicsConfiguration.getBounds().getWidth());
             coordinateSystem.setHeight((int) graphicsConfiguration.getBounds().getHeight());
+            coordinateSystem.setScale(2.25);
             surface = new Surface(coordinateSystem);
         } else {
             coordinateSystem.setWidth((int) FRAME_DIMENSION.getWidth());

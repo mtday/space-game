@@ -3,15 +3,25 @@ package com.mday.client.game;
 import com.mday.client.event.ClockTickObserver;
 import com.mday.client.event.Event;
 import com.mday.client.event.EventConsumer;
-import com.mday.client.event.type.coordinate.*;
+import com.mday.client.event.type.coordinate.PanDownEvent;
+import com.mday.client.event.type.coordinate.PanEvent;
+import com.mday.client.event.type.coordinate.PanLeftEvent;
+import com.mday.client.event.type.coordinate.PanRightEvent;
+import com.mday.client.event.type.coordinate.PanUpEvent;
+import com.mday.client.event.type.coordinate.ZoomInEvent;
+import com.mday.client.event.type.coordinate.ZoomOutEvent;
 import com.mday.common.model.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.geom.Point2D;
-import java.util.*;
 
 /**
  * Represents the display surface on which the game graphics will be drawn.
@@ -133,6 +143,15 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
      */
     public double getScale() {
         return scale;
+    }
+
+    /**
+     * Set the current scale value.
+     *
+     * @param scale the new scale value
+     */
+    public void setScale(final double scale) {
+        this.scale = this.scaleGoal = scale;
     }
 
     /**

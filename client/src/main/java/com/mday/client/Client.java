@@ -19,6 +19,7 @@ import com.mday.client.ui.render.UnitRenderer;
 import com.mday.client.ui.render.debug.GridRenderer;
 import com.mday.client.ui.render.debug.MousePositionRenderer;
 import com.mday.client.ui.render.debug.ScaleRenderer;
+import com.mday.client.ui.render.debug.SelectedShipRenderer;
 import com.mday.common.model.Location;
 import com.mday.common.model.Ship;
 import com.mday.common.model.ShipClass;
@@ -58,6 +59,7 @@ public class Client {
         display.addSurfaceConsumer(new UnitRenderer(units));
         display.addSurfaceConsumer(new ScaleRenderer());
         display.addSurfaceConsumer(new GridRenderer());
+        display.addSurfaceConsumer(new SelectedShipRenderer(units));
         display.addSurfaceConsumer(mousePositionRenderer);
         display.addSurfaceConsumer(mouseSelectionRenderer);
 
