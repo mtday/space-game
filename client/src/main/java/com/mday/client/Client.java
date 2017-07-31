@@ -32,7 +32,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 /**
- * Starts the game client.
+ * The game client.
  */
 public class Client {
     private static final boolean FULL_SCREEN = true;
@@ -78,18 +78,15 @@ public class Client {
         runner.addEventConsumer(new MouseZoomAction(eventQueue));
 
         final List<Ship> ships = new LinkedList<>();
+        int r = 0; int c = 0;
         for (final ShipClass shipClass : ShipClass.values()) {
-            ships.add(new Ship(shipClass.name(), new Location(), shipClass, "owner"));
-        }
-
-        final Iterator<Ship> shipIterator = ships.iterator();
-        for (int r = 0; r < 5; r++) {
-            for (int c = 0; c < 5; c++) {
-                if (shipIterator.hasNext()) {
-                    final Ship ship = shipIterator.next();
-                    ship.setLocation(new Location(-210 + c * 100, -140 + r * 90));
-                    eventQueue.add(new UnitAddEvent(ship));
-                }
+            Location place = new Location(-210 + c++ /* Get it? Ha. */ * 100, -140 + r * 90);
+            final Ship ship = new Ship(shipClass.name(), place, shipClass, "owner");
+            eventQueue.add(new UnitAddEvent(ship));
+            
+            if(c > 4){
+                c = 0;
+                r++;
             }
         }
 
