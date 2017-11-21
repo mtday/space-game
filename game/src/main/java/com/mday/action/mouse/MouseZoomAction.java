@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.geom.Point2D;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
@@ -32,21 +33,22 @@ public class MouseZoomAction implements EventConsumer {
         this.eventQueue = eventQueue;
     }
 
+    @Nonnull
+    private Event toZoomEvent(@Nonnull final MouseWheelEvent mouseWheelEvent) {
+        final int rotation = mouseWheelEvent.getMouseWheelEvent().getWheelRotation();
+        final Point2D.Double point = new Point2D.Double(
+                mouseWheelEvent.getMouseWheelEvent().getX(), mouseWheelEvent.getMouseWheelEvent().getY());
+        return (rotation > 0) ? new ZoomInEvent(point) : new ZoomOutEvent(point);
+    }
+
     @Override
     public void accept(@Nonnull final Event event) {
-        if (event instanceof MouseWheelEvent) {
-            final MouseWheelEvent mouseWheelEvent = (MouseWheelEvent) event;
-            // We only care about mouse wheel events that happen on the surface, not the frame.
-            if (mouseWheelEvent.getMouseWheelEvent().getSource() instanceof Surface) {
-                final int rotation = mouseWheelEvent.getMouseWheelEvent().getWheelRotation();
-                final Point2D.Double point = new Point2D.Double(
-                        mouseWheelEvent.getMouseWheelEvent().getX(), mouseWheelEvent.getMouseWheelEvent().getY());
-                if (rotation > 0) {
-                    eventQueue.add(new ZoomInEvent(point));
-                } else {
-                    eventQueue.add(new ZoomOutEvent(point));
-                }
-            }
-        }
+        Stream.of(event)
+                .filter(e -> e instanceof MouseWheelEvent)
+                .map(e -> (MouseWheelEvent) e)
+                // We only care about mouse wheel events that happen on the surface, not the frame.
+                .filter(e -> e.getMouseWheelEvent().getSource() instanceof Surface)
+                .map(this::toZoomEvent)
+                .forEach(eventQueue::add);
     }
 }

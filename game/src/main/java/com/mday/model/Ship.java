@@ -1,15 +1,14 @@
 package com.mday.model;
 
 import static com.mday.model.UnitType.SHIP;
+import static java.lang.String.format;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 /**
  * The base class for ships.
  */
-@SuppressFBWarnings("EQ_DOESNT_OVERRIDE_EQUALS")
 public class Ship extends Unit {
     @Nonnull
     private final ShipClass shipClass;
@@ -66,9 +65,18 @@ public class Ship extends Unit {
     }
 
     @Override
+    public boolean equals(@CheckForNull final Object other) {
+        return super.equals(other);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
     @Nonnull
     public String toString() {
-        return String.format("Ship[unit=%s, shipClass=%s, owner=%s]",
-                super.toString(), getShipClass().name(), getOwner());
+        return format("Ship[unit=%s, shipClass=%s, owner=%s]", super.toString(), getShipClass().name(), getOwner());
     }
 }

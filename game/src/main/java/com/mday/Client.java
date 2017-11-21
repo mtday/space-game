@@ -9,7 +9,7 @@ import com.mday.event.type.unit.UnitAddEvent;
 import com.mday.game.CoordinateSystem;
 import com.mday.game.EventQueue;
 import com.mday.game.Runner;
-import com.mday.game.UnitMover;
+import com.mday.game.movement.UnitMover;
 import com.mday.game.Units;
 import com.mday.ui.Display;
 import com.mday.ui.render.BackgroundRenderer;

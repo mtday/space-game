@@ -1,7 +1,10 @@
 
 package com.mday.model;
 
-import java.util.Objects;
+import static java.lang.Math.abs;
+import static java.lang.Math.sqrt;
+import static java.lang.String.format;
+import static java.util.Objects.hash;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -62,7 +65,7 @@ public class Location {
      * @return the length of the location point from the origin
      */
     public double getLength() {
-        return Math.sqrt((getX() * getX()) + (getY() * getY()));
+        return sqrt((getX() * getX()) + (getY() * getY()));
     }
 
     /**
@@ -175,18 +178,18 @@ public class Location {
         }
 
         final Location location = (Location) other;
-        return Math.abs(x - location.x) < 0.00001 && Math.abs(y - location.y) < 0.00001;
+        return abs(x - location.x) < 0.00001 && abs(y - location.y) < 0.00001;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y);
+        return hash(x, y);
     }
 
     @Override
     @Nonnull
     public String toString() {
-        return String.format("Location[x=%.5f, y=%.5f]", x, y);
+        return format("Location[x=%.5f, y=%.5f]", x, y);
     }
 }
 

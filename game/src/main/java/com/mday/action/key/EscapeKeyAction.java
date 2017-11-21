@@ -10,6 +10,8 @@ import com.mday.game.EventQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.stream.Stream;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -32,11 +34,12 @@ public class EscapeKeyAction implements EventConsumer {
 
     @Override
     public void accept(@Nonnull final Event event) {
-        if (event instanceof KeyEvent) {
-            final KeyEvent keyEvent = (KeyEvent) event;
-            if (keyEvent.getKeyEvent().getKeyCode() == ESCAPE) {
-                eventQueue.add(new QuitEvent());
-            }
-        }
+        Stream.of(event)
+                .filter(e -> e instanceof KeyEvent)
+                .map(e -> (KeyEvent) e)
+                .map(ke -> ke.getKeyEvent().getKeyCode())
+                .filter(keyCode -> keyCode == ESCAPE)
+                .map(keyCode -> new QuitEvent())
+                .forEach(eventQueue::add);
     }
 }

@@ -10,6 +10,7 @@ import com.mday.event.type.unit.UnitDeselectEvent;
 import com.mday.event.type.unit.UnitMoveEvent;
 import com.mday.event.type.unit.UnitRemoveEvent;
 import com.mday.event.type.unit.UnitSelectEvent;
+import com.mday.game.movement.UnitMover;
 import com.mday.model.Location;
 import com.mday.model.Unit;
 import com.mday.model.UnitType;
@@ -133,8 +134,8 @@ public class Units implements EventConsumer {
             unitsSelected = false;
         } else if (event instanceof UnitMoveEvent) {
             final UnitMoveEvent unitMoveEvent = (UnitMoveEvent) event;
-            final List<Unit> selectedMoveable = getSelected().stream().filter(Unit::isMovable).collect(toList());
-            unitMover.add(selectedMoveable, coordinateSystem.toLocation(unitMoveEvent.getDestination()));
+            final List<Unit> selectedMovable = getSelected().stream().filter(Unit::isMovable).collect(toList());
+            unitMover.add(selectedMovable, coordinateSystem.toLocation(unitMoveEvent.getDestination()));
         }
     }
 }

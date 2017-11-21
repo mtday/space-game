@@ -95,6 +95,7 @@ public class MouseAction implements EventConsumer {
                     unitsSelected = units.isUnitsSelected();
                 } else if (mouseEvent.getMouseEvent().getID() == MOUSE_DRAGGED
                         || mouseEvent.getMouseEvent().getID() == MOUSE_RELEASED) {
+                    // User used the right mouse button to drag, treat this as a pan of the display.
                     final int endX = mouseEvent.getMouseEvent().getX();
                     final int endY = mouseEvent.getMouseEvent().getY();
 

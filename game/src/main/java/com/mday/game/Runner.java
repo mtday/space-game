@@ -12,6 +12,7 @@ import com.mday.ui.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
@@ -111,10 +112,8 @@ public class Runner implements Runnable, EventConsumer {
 
     private void consumeEvents() {
         while (!eventQueue.isEmpty()) {
-            final Event event = eventQueue.poll();
-            if (event != null) {
-                eventConsumers.forEach(consumer -> consumer.accept(event));
-            }
+            Optional.ofNullable(eventQueue.poll())
+                    .ifPresent(event -> eventConsumers.forEach(consumer -> consumer.accept(event)));
         }
     }
 

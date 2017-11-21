@@ -1,17 +1,20 @@
 package com.mday.action.key;
 
+import static java.awt.event.KeyEvent.KEY_TYPED;
+
 import com.mday.event.Event;
 import com.mday.event.EventConsumer;
-import com.mday.event.type.input.KeyEvent;
 import com.mday.event.type.coordinate.ZoomInEvent;
 import com.mday.event.type.coordinate.ZoomOutEvent;
+import com.mday.event.type.input.KeyEvent;
 import com.mday.game.EventQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
+import java.util.stream.Stream;
 
-import static java.awt.event.KeyEvent.KEY_TYPED;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Responsible for handling the zoom in and out keys.
@@ -31,18 +34,24 @@ public class ZoomKeyAction implements EventConsumer {
         this.eventQueue = eventQueue;
     }
 
+    @Nullable
+    private Event toZoomEvent(final char key) {
+        if (key == '+' || key == '=') {
+            return new ZoomInEvent();
+        } else if (key == '-' || key == '_') {
+            return new ZoomOutEvent();
+        }
+        return null;
+    }
+
     @Override
     public void accept(@Nonnull final Event event) {
-        if (event instanceof KeyEvent) {
-            final KeyEvent keyEvent = (KeyEvent) event;
-            if (keyEvent.getKeyEvent().getID() == KEY_TYPED) {
-                final char keychar = keyEvent.getKeyEvent().getKeyChar();
-                if (keychar == '+' || keychar == '=') {
-                    eventQueue.add(new ZoomInEvent());
-                } else if (keychar == '-' || keychar == '_') {
-                    eventQueue.add(new ZoomOutEvent());
-                }
-            }
-        }
+        Stream.of(event)
+                .filter(e -> e instanceof KeyEvent)
+                .map(e -> (KeyEvent) e)
+                .filter(ke -> ke.getKeyEvent().getID() == KEY_TYPED)
+                .map(ke -> ke.getKeyEvent().getKeyChar())
+                .map(this::toZoomEvent)
+                .forEach(eventQueue::add);
     }
 }

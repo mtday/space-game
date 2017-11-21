@@ -45,6 +45,7 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
     private static final double PAN_PERCENT = 0.10; // When panning, we shift the display surface by 10%.
     private final List<List<Location>> panDeltas = new LinkedList<>();
 
+    // The location in the center of the display.
     @Nonnull
     private Location center = new Location();
 
@@ -112,11 +113,9 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
             scale += scaleIncrement;
 
             if (scale > MAX_SCALE) {
-                scale = MAX_SCALE;
-                scaleGoal = MAX_SCALE;
+                scale = scaleGoal = MAX_SCALE;
             } else if (scale < MIN_SCALE) {
-                scale = MIN_SCALE;
-                scaleGoal = MIN_SCALE;
+                scale = scaleGoal = MIN_SCALE;
             }
 
             // Update the center location in the coordinate system based on the scaling focus point, if available.
@@ -125,6 +124,7 @@ public class CoordinateSystem implements ClockTickObserver, EventConsumer {
             }
         }
 
+        // Process any pan deltas that have been queued for processing.
         final Iterator<List<Location>> panDeltaIter = panDeltas.iterator();
         while (panDeltaIter.hasNext()) {
             final List<Location> deltas = panDeltaIter.next();
