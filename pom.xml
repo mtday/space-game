@@ -9,9 +9,7 @@
 
     <modules>
         <module>build-tools</module>
-        <module>common</module>
-        <module>client</module>
-        <module>server</module>
+        <module>game</module>
     </modules>
 
     <properties>
@@ -36,18 +34,6 @@
                 <groupId>${project.groupId}</groupId>
                 <artifactId>client</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>server</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <!-- Netty -->
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-all</artifactId>
-                <version>4.1.13.Final</version>
             </dependency>
 
             <!-- Null checking annotations -->
@@ -100,10 +86,7 @@
                     <failOnWarning>true</failOnWarning>
                     <verbose>true</verbose>
                     <ignoredUnusedDeclaredDependencies>
-                        <ignoredUnusedDeclaredDependency>org.scala-lang:scala-library</ignoredUnusedDeclaredDependency>
-                        <ignoredUnusedDeclaredDependency>
-                            ch.qos.logback:logback-classic
-                        </ignoredUnusedDeclaredDependency>
+                        <ignoredUnusedDeclaredDependency>ch.qos.logback:*</ignoredUnusedDeclaredDependency>
                     </ignoredUnusedDeclaredDependencies>
                 </configuration>
                 <executions>
