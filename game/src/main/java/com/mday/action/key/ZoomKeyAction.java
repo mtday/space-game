@@ -11,6 +11,7 @@ import com.mday.game.EventQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
@@ -52,6 +53,7 @@ public class ZoomKeyAction implements EventConsumer {
                 .filter(ke -> ke.getKeyEvent().getID() == KEY_TYPED)
                 .map(ke -> ke.getKeyEvent().getKeyChar())
                 .map(this::toZoomEvent)
+                .filter(Objects::nonNull)
                 .forEach(eventQueue::add);
     }
 }
